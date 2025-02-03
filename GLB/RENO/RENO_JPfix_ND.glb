@@ -1,0 +1,206 @@
+%!GLoBES
+
+$version="3.0.0"
+
+/* AEDL file for the RENO experiment
+ *
+ * Copyright 2020 Sampsa Vihonen
+ *
+ * If you modify this file you have to rename it.
+ *
+ * If you are using this file for producing a scientific publication
+ * or a talk please cite the following references and check the supporting
+ * files for a similar comment.
+ *
+ * This file is based on the example given in the GLoBES website (GLoBES 2020).
+ * It is based on the publications shown below:
+ *
+ #* @Article{Huber:2009xx,
+ #*  author = "Huber, P and Lindner, M and Schwetz, T and Winter, W",
+ #*  title = "First hint for CP violation in neutrino oscillations 
+ #*           from upcoming superbeam and reactor experiments",
+ #*  year = "2009",
+ #*  eprint = "arXiv:0907.1896"		
+ #* }
+ *
+ * The AEDL file is modified to match the RENO data from the Neutrino 2022 conference.
+ * This file provides the simulated events for the near detector data.
+ * Matching is done by Haixing Lin 
+ *
+ * linhx55@mail2.sysu.edu.cn
+ *
+ */
+
+ /*********************************************************************************
+*   Special edited by Haixing.Lin.
+*   The glbfile is not to fit oscillation data but provides sensitivity.
+*   ND.glb will produce the exact data when FD.glb gets its minimum
+**********************************************************************************/
+
+
+/*
+  Experimental specifics for RENO ND
+*/
+
+/* ####### Reactor flux ####### */
+
+nuflux(#PureU235)<
+	@flux_file="../GLB/RENO/Fluxes/Pure_U235_SM.dat"
+	@time = 2509.0		/* days */
+	@power = 16.4 	/* GW thermal */
+	@norm = 1.2E6
+>
+
+nuflux(#PureU238)<
+	@flux_file="../GLB/RENO/Fluxes/Pure_U238_SM.dat"
+	@time = 2509.0		/* days */
+	@power = 16.4	/* GW thermal */
+	@norm = 1.2E6
+>
+
+nuflux(#PurePu239)<
+	@flux_file="../GLB/RENO/Fluxes/Pure_Pu239_SM.dat"
+	@time = 2509.0		/* days */
+	@power = 16.4 	/* GW thermal */
+	@norm = 1.2E6
+>
+
+nuflux(#PurePu241)<
+	@flux_file="../GLB/RENO/Fluxes/Pure_Pu241_SM.dat"
+	@time = 2509.0		/* days */
+	@power = 16.4 	/* GW thermal */
+	@norm = 1.2E6
+>
+nuflux(#Background0)<
+	@flux_file="../GLB/RENO/Fluxes/Pure_Pu241_SM.dat"
+	@time = 2509.0		/* days */
+	@power = 16.4 	/* GW thermal */
+	@norm = 0/*Only used for background*/
+>
+
+
+/* ######## Baseline setting ######## */
+
+$profiletype = 3
+$densitytab  = { 1e-6 }
+$lengthtab   = { 0.3  } /* km */
+
+
+/* ####### Detector settings ####### */
+
+$target_mass = 15.40  /* tons (fiducial mass) */
+
+
+/* ####### Energy window ####### */
+
+F = 1.0E-3
+e_shift = 0.78
+
+$emin =                 (1.2+e_shift)*F	/* Low:  1.2 MeV */
+$emax =                 (8.4+e_shift)*F	/* High: 8.4 MeV */
+$binsize =              {0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F,
+                         0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F,
+                         0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.2*F, 0.2*F, 0.2*F, 0.4*F, 1.0*F}
+
+$sampling_min =         (1.2+e_shift)*F	/* Low:  1.2 MeV */
+$sampling_max =         (8.5+e_shift)*F	/* High: 8.5 MeV */
+$sampling_stepsize =    {0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F,
+                         0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F,
+                         0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.2*F, 0.2*F, 0.2*F, 0.4*F, 1.0*F}
+
+
+/* ######## Technical information ######## */
+
+$filter_state = 1
+$filter_value = 0.0001 
+
+
+/* ####### Energy resolution ####### */
+
+energy(#ERES)<
+        @type = 1
+        @sigma_function = #inverse_beta
+        @sigma_e = {0.079,0,0}
+>
+
+
+/* ####### Cross sections ####### */
+
+cross(#Reactor_CC)<
+@cross_file = "../GLB/RENO/Fluxes/IBDnew.dat"
+>
+
+
+/* ####### Energy-dependent efficiencies and pre-smearing backgrounds ####### */
+
+%NDeffs = {
+0.6391058189,0.5128174805,0.4846870975,0.4789909226,0.4717973163,
+0.4613300005,0.4482481485,0.4536046482,0.4459295187,0.4428971032,
+0.4331059996,0.4299293910,0.4263574718,0.4235053682,0.4222158021,
+0.4240617544,0.4152826507,0.4153747154,0.4137932541,0.4133657761,
+0.4164634257,0.4177805210,0.4118819773,0.4120323764,0.4112134136,
+0.4098185571,0.4081672891,0.4083849330,0.4078552562,0.4121730436,
+0.4120362638,0.4184723148,0.4190745035,0.4292096050,0.4306249639,
+0.4406898538,0.4465031388,0.4486531852,0.4541596773,0.4445622652,
+0.4573451714,0.4417186691,0.4317616934,0.4303547152,0.4247073321,
+0.4172681631,0.4066077412,0.4006045503,0.3910807183,0.3864837853,
+0.3745530510,0.3684208362,0.3590252553,0.3366793674,0.3349228070,
+0.3107037928,0.1067235562}
+
+%NDbkgs = {737.0397978926221,737.1790041714568,736.4323745002137,740.4264090845471,714.1068484378168,
+661.8095394151553,601.9933663140353,548.5338303979352,500.97904203604685,457.6417448388452,
+430.95450790261214,417.55679076953675,411.32727285822625,417.2564950297421,425.5681920278856,
+425.68597467857876,416.82117059926816,398.549167450001,369.6085029035949,339.00915716293764,
+315.9993952705581,304.5265938587375,295.5956822393614,298.2252692600825,296.5575490572878,
+295.8980269356155,297.69274190074185,298.4021841767888,298.04596266716436,298.02485341667887,
+298.0658280978903,298.05142355828406,298.0690641113552,298.0182876144881,298.2682199817739,
+297.68244013856116,295.942034951612,296.1948686883983,297.68207397577567,298.22743814851447,
+298.04606821318885,298.01912740998927,296.98068983504083,294.4638816827895,291.4770956185371,
+289.8966388996085,289.2271353009503,288.38491732362814,287.0245853950833,285.40791668043477,
+283.8034386323883,282.0864536392484,278.75692922168344,273.3108184122566,268.2677469606383,
+260.4887724644202,229.1601679649198}
+
+
+/* ####### Channel definitions ####### */
+
+//Signal
+channel(#U235_CC)<
+	@channel = 	#PureU235:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%NDeffs)
+>
+
+channel(#U238_CC)<
+	@channel = 	#PureU238:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%NDeffs)
+>
+
+channel(#Pu239_CC)<
+	@channel = 	#PurePu239:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%NDeffs)
+>
+
+channel(#Pu241_CC)<
+	@channel = 	#PurePu241:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%NDeffs)
+>
+
+//Background
+channel(#BGND)<
+	@channel = 	#Background0:	-:	NOSC_e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_background = copy(%NDbkgs)	
+>
+
+
+/* ####### Setting the rules ####### */
+
+rule(#NU_E_Disappearance)<
+        @signal     = 1.0@#U235_CC : 1.0@#U238_CC : 1.0@#Pu239_CC : 1@#Pu241_CC	
+        /* Efficinecies are given in the channel definition */
+   
+        @background = 1.0@#BGND  /* Background is given in the channel definition */
+
+        @sys_off_function = "chiNoSysSpectrum"
+        @sys_off_errors   = {}
+        @sys_on_function  = "chiZero"
+        @sys_on_errors    = {}
+>

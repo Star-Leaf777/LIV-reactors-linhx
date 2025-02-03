@@ -1,0 +1,137 @@
+%!GLoBES
+
+$version="3.0.0"
+
+/* AEDL file for the RENO experiment
+ *
+ * Copyright 2020 Sampsa Vihonen
+ *
+ * If you modify this file you have to rename it.
+ *
+ * If you are using this file for producing a scientific publication
+ * or a talk please cite the following references and check the supporting
+ * files for a similar comment.
+ *
+ * This file is based on the example given in the GLoBES website (GLoBES 2020).
+ * It is based on the publications shown below:
+ *
+ #* @Article{Huber:2009xx,
+ #*  author = "Huber, P and Lindner, M and Schwetz, T and Winter, W",
+ #*  title = "First hint for CP violation in neutrino oscillations 
+ #*           from upcoming superbeam and reactor experiments",
+ #*  year = "2009",
+ #*  eprint = "arXiv:0907.1896"		
+ #* }
+ *
+ * The AEDL file is modified to match the RENO data from the Neutrino 2020 conference.
+ * This file provides the simulated events for the far detector data.
+ * Matching is done by Sampsa Vihonen. Last modified on 2020-08-12.
+ *
+ * sampsa@mail.sysu.edu.cn
+ *
+ */
+
+
+/* ####### Reactor flux ####### */
+
+nuflux(#RENO)<
+        @flux_file = "../RENO/Reactor.dat"
+        @time      = 2908.0	/* days */
+        @power     = 16.4	/* GWth */
+        @norm      = 1.0e-8
+>
+
+
+/* ######## Baseline setting ######## */
+
+$profiletype = 3
+$densitytab  = { 1e-6 }
+$lengthtab   = { 1.4  } /* km */
+
+
+/* ####### Detector settings ####### */
+
+$target_mass = 15.40  /* tons (fiducial mass) */
+
+
+/* ####### Energy window ####### */
+
+F = 1.0E-3
+
+$emin =                 1.2*F	/* Low:  1.2 MeV */
+$emax =                 8.4*F	/* High: 8.4 MeV */
+$binsize =              {0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F,
+                         0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 
+                         0.2*F, 0.2*F, 0.2*F, 0.4*F, 0.4*F, 0.6*F, 1.4*F}
+
+$sampling_min =         1.2*F	/* Low:  1.2 MeV */
+$sampling_max =         8.5*F	/* High: 8.5 MeV */
+$sampling_stepsize =    {0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 
+                         0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F, 0.1*F,  
+                         0.2*F, 0.2*F, 0.2*F, 0.4*F, 0.4*F, 0.6*F, 1.4*F}
+
+
+/* ######## Technical information ######## */
+
+$filter_state = 0 
+$filter_value = 1000000 
+
+
+/* ####### Energy resolution ####### */
+
+energy(#ERES)<
+        @type = 1
+        @sigma_function = #inverse_beta
+        @sigma_e = {0.12,0,0}
+>
+
+
+/* ####### Cross sections ####### */
+
+cross(#Reactor_CC)<
+        @cross_file = "../RENO/XCCreactor.dat"
+>
+
+
+/* ####### Energy-dependent efficiencies and pre-smearing backgrounds ####### */
+
+%FDeffs = {0.7630717023860997,0.02776724609063864,0.0018140625331041693,0.00020842530407662457,4.010873864433834e-05,
+1.2294984041286869e-05,5.532901221234023e-06,3.487873041201095e-06,2.535185692505498e-06,2.062939068124255e-06,
+1.7330159712012031e-06,1.53292660413722e-06,1.3921875185724272e-06,1.2736073695353362e-06,1.17416630785884e-06,
+1.0956790352570815e-06,1.0163347467250155e-06,9.597641895180154e-07,9.082855746592605e-07,8.709479250368816e-07,
+8.388564546911783e-07,8.119357888302005e-07,7.60329478404855e-07,7.287958950524914e-07,6.982083228121937e-07,
+6.652365476670861e-07,6.354760882427193e-07,6.259786128384827e-07,6.125812397563067e-07,6.069350541993074e-07,
+5.970003723876801e-07,5.983616877866815e-07,5.837298211145459e-07,5.866946634586878e-07,5.793989543368175e-07,
+5.710603460637423e-07,5.523580159756498e-07,5.006123218814994e-07,2.273812367690858e-07,2.1258576344207873e-07,
+2.0641422526782018e-07,1.0270804122011526e-07,1.0232447314603619e-07,4.507844106384042e-08,0}
+
+%FDbkgs = {149.466192171, 154.804270463, 144.128113879, 137.722419929, 132.384341637, 133.451957295, 135.587188612, 130.24911032, 117.43772242,
+          114.234875445, 120.640569395, 114.234875445, 93.9501779359, 89.6797153025, 101.423487544, 101.423487544, 88.6120996441, 86.4768683274,
+          93.9501779359, 86.4768683274, 64.0569395018, 56.5836298932, 59.7864768683, 62.9893238434, 67.2597864769, 74.7330960854, 82.206405694,
+          81.1387900356, 70.462633452, 64.0569395018, 65.1245551601, 65.1245551601, 66.1921708185, 67.2597864769, 67.2597864769, 68.3274021352,
+          69.3950177936, 84.3416370107, 119.572953737, 107.829181495, 88.6120996441, 65.1245551601, 65.1245551601, 66.1921708185, 77.9359430605}
+
+
+/* ####### Channel definitions ####### */
+
+channel(#nu_e_disappearance)<
+        @channel   =    #RENO:      -  :      e  :     e : #Reactor_CC : #ERES
+        @post_smearing_efficiencies = copy(%FDeffs)
+        @post_smearing_background = copy(%FDbkgs)
+>
+
+
+/* ####### Setting the rules ####### */
+
+rule(#NU_E_Disappearance)<
+        @signal     = 1.0@#nu_e_disappearance
+   
+        @background = 0.0@#nu_e_disappearance   /* Background is included in efficiencies */
+
+        @sys_off_function = "chiNoSysSpectrum"
+        @sys_off_errors   = {}
+
+        @sys_on_function  = "chiRENONorm"
+        @sys_on_errors    = { 0.009, 0.002, 0.002, 0.00001, 0.00001, 0.0015, 0.0015 }
+>
+

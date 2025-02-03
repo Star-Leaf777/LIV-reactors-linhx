@@ -1,0 +1,258 @@
+%!GLoBES
+
+/* 
+  This file contains a combination of different experiments in constraining
+  the properties of antineutrinos coming from reactors...
+
+  The overall number of events will be irrelevant for what we want to calculate
+  in this module, so we elect to set @time, @power and @target_mass all to unity.
+
+  This particular file deals with spectral measurements. The order of experiments is as
+  follows:
+
+  0 - DANSS (upper position)
+  1 – DANSS (lower position)
+
+  2 - Daya Bay EH1 AD1 (special format to be compatible with NEOS)
+  3 - Daya Bay EH1 AD2 (special format to be compatible with NEOS)
+  4 - Daya Bay EH2 AD3 (special format to be compatible with NEOS)
+  5 - Daya Bay EH2 AD8 (special format to be compatible with NEOS)
+
+  6 - Daya Bay EH3 AD4
+  7 - Daya Bay EH3 AD5
+  8 - Daya Bay EH3 AD6
+  9 - Daya Bay EH3 AD7
+
+  10 - NEOS
+
+  11 - Double Chooz ND
+  12 - Double Chooz FD
+
+  13 - Bugey, 15 m
+  14 - Bugey, 40 m
+
+  15 - RENO ND
+  16 - RENO FD
+
+  THIS FILE CONTAINS ONLY DAYA BAY NEAR DETECTORS
+*/
+
+/*********************************************************************************
+*                                                  
+*       DAYA BAY ANALYSIS
+*
+* This file uses a smattering of information from the following references:         
+*                                                  
+* 
+* @article{An:2016srz,
+*       author         = "An, Feng Peng and others",
+*       title          = "{Improved Measurement of the Reactor Antineutrino Flux
+*                         and Spectrum at Daya Bay}",
+*       collaboration  = "Daya Bay",
+*       journal        = "Chin. Phys.",
+*       volume         = "C41",
+*       year           = "2017",
+*       number         = "1",
+*       pages          = "013002",
+*       doi            = "10.1088/1674-1137/41/1/013002",
+*       eprint         = "1607.05378",
+*       archivePrefix  = "arXiv",
+*       primaryClass   = "hep-ex",
+*       SLACcitation   = "%%CITATION = ARXIV:1607.05378;%%"
+* }
+* 
+* @article{An:2016ses,
+*       author         = "An, Feng Peng and others",
+*       title          = "{Measurement of electron antineutrino oscillation based
+*                         on 1230 days of operation of the Daya Bay experiment}",
+*       collaboration  = "Daya Bay",
+*       journal        = "Phys. Rev.",
+*       volume         = "D95",
+*       year           = "2017",
+*       number         = "7",
+*       pages          = "072006",
+*       doi            = "10.1103/PhysRevD.95.072006",
+*       eprint         = "1610.04802",
+*       archivePrefix  = "arXiv",
+*       primaryClass   = "hep-ex",
+*       SLACcitation   = "%%CITATION = ARXIV:1610.04802;%%"
+* }
+* 
+* @article{An:2017osx,
+*       author         = "An, F. P. and others",
+*       title          = "{Evolution of the Reactor Antineutrino Flux and Spectrum
+*                         at Daya Bay}",
+*       collaboration  = "Daya Bay",
+*       journal        = "Phys. Rev. Lett.",
+*       volume         = "118",
+*       year           = "2017",
+*       number         = "25",
+*       pages          = "251801",
+*       doi            = "10.1103/PhysRevLett.118.251801",
+*       eprint         = "1704.01082",
+*       archivePrefix  = "arXiv",
+*       primaryClass   = "hep-ex",
+*       SLACcitation   = "%%CITATION = ARXIV:1704.01082;%%"
+* }
+* 
+**********************************************************************************/
+
+/*********************************************************************************
+* 
+* THIS IS THE DEFINITION OF EH1 ：Hyy and Star edited
+*
+**********************************************************************************/
+
+ $version="3.2.17.0"
+
+/*
+  Experimental specifics for EH1-AD1...
+*/
+
+/* ####### Reactor flux ####### */
+
+nuflux(#PureU235)<
+	@flux_file="../GLB/DayaBay/Fluxes/Pure_U235_SM.dat"
+	@time      = 1958.0	/* days */
+    @power     = 17.4	/* GWth */
+	@norm = 0.265e+7
+>
+
+nuflux(#PureU238)<
+	@flux_file="../GLB/DayaBay/Fluxes/Pure_U238_SM.dat"
+	@time      = 1958.0	/* days */
+    @power     = 17.4	/* GWth */
+	@norm = 0.265e+7
+>
+
+nuflux(#PurePu239)<
+	@flux_file="../GLB/DayaBay/Fluxes/Pure_Pu239_SM.dat"
+	@time      = 1958.0	/* days */
+    @power     = 17.4	/* GWth */
+	@norm = 0.265e+7
+>
+
+nuflux(#PurePu241)<
+	@flux_file="../GLB/DayaBay/Fluxes/Pure_Pu241_SM.dat"
+	@time      = 1958.0	/* days */
+    @power     = 17.4	/* GWth */
+	@norm = 0.265e+7
+>
+nuflux(#Background0)<
+	@flux_file="../GLB/DayaBay/Fluxes/Pure_Pu241_SM.dat"
+	@time = 1958.0		/* days */
+	@power = 17.4 	/* GW thermal */
+	@norm = 0/*Only use for background*/
+>
+
+/* ####### Detector settings ####### */
+
+$target_mass = 	        80.0  /* tons (fiducial mass) */
+
+/* ####### Energy window ####### */
+
+F = 1.0E-3
+$emin =                 (0.7+0.8)*F	/* Low:  0.7 MeV */
+$emax =                 (12.0+0.8)*F	/* High: 12. MeV */
+$binsize =               {0.6*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F,
+		0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+		0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F,
+                         	0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+		0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 4.7*F}
+
+$sampling_min =         (0.7+0.8)*F	/* Low:  0.7 MeV */
+$sampling_max =         (12.0+0.8)*F	/* High: 12. MeV */
+$sampling_stepsize =   {0.6*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+			0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F,
+			0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F,
+                         		0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+			0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 4.7*F}
+
+/* ######## Baseline setting ######## */
+
+$profiletype = 		3 
+$densitytab = 		{0}
+$lengthtab = 		{1.579} /* km */
+
+/* ######## Technical information ######## */
+
+$filter_state = 1
+$filter_value = 0.0001 
+
+/* ####### Energy resolution ####### */
+
+energy(#ERES)<
+        @type = 1
+        @sigma_function = #standard
+        @sigma_e = {0,0.09,0} //sigma = 0.09 sqrt(E)
+>
+
+/* ####### Cross sections ####### */
+
+cross(#Reactor_CC)<
+@cross_file = "../GLB/DayaBay/Fluxes/IBDnew.dat"
+>
+
+/* ####### Energy-dependent efficiencies and pre-smearing backgrounds ####### */
+
+%EH3effs={0.5727988899,1.7471824486,2.5926754318,3.3895791077,3.9582592528,
+4.3390491437,4.5046162219,4.5783252076,4.5385971503,4.2991700395,
+3.9319147927,3.5524237905,3.2730724000,2.9931453998,2.6961333846,
+2.3692768260,2.0177796821,1.6648039141,1.3291537757,1.0872061050,
+0.8324360159,0.6050141107,0.4295140262,0.2889684568,0.1824502210,
+0.0203205645}
+
+
+/* Post-smearing backgrounds (as function of energy) */
+B = 1E3
+%BG = {
+6.083443118831843*B,4.9246513817555355*B,4.171912097856075*B,2.116639626201485*B,1.0792541288191213*B,
+1.4937057165024892*B,2.018045072621766*B,1.1240976561535239*B,0.3732000916338968*B,0.09970137178434399*B,
+0.006888289883452877*B,0.008709302676797327*B,0.05580755216171329*B,0.11870678363702007*B,0.16883440013586712*B,
+0.19152567201500295*B,0.19166189401809194*B,0.1755908319058482*B,0.14966025143898581*B,0.12021791837821899*B,
+0.09262844539260807*B,0.06808938331699399*B,0.04669445264119151*B,0.028537366363603805*B,0.01371183748263379*B,
+0.007851412645554237*B}
+
+/* ####### Channel definitions ####### */
+
+channel(#U235_CC)<
+	@channel = 	#PureU235:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%EH3effs)
+>
+
+channel(#U238_CC)<
+	@channel = 	#PureU238:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%EH3effs)
+>
+
+channel(#Pu239_CC)<
+	@channel = 	#PurePu239:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%EH3effs)
+>
+
+channel(#Pu241_CC)<
+	@channel = 	#PurePu241:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%EH3effs)
+>
+
+
+
+//Background
+
+channel(#BG)<
+	@channel = 	#Background0:	-:	NOSC_e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_background = copy(%BG)
+>
+
+
+/* ####### Setting the rules ####### */
+
+rule(#total)<
+        @signal     = 1.0@#U235_CC : 1.0@#U238_CC : 1.0@#Pu239_CC : 1@#Pu241_CC	/* Efficinecies are given in the channel definition */
+        @background = 1.0@#BG   /* Background is given in the channel definition */
+        @sys_off_function = "chiNoSysSpectrum"
+        @sys_off_errors   = {}
+        @sys_on_function  = "chiZero"
+        @sys_on_errors    = {}
+>
+/**********************END*******************************/

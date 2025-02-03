@@ -1,0 +1,154 @@
+%!GLoBES
+
+$version="3.0.0"
+
+/* AEDL file for the Double Chooz experiment
+ *
+ * Copyright 2020 Sampsa Vihonen
+ *
+ * If you modify this file you have to rename it.
+ *
+ * If you are using this file for producing a scientific publication
+ * or a talk please cite the following references and check the supporting
+ * files for a similar comment.
+ *
+ * This file is based on the example given in the GLoBES website (GLoBES 2020).
+ * It is based on the publications shown below:
+ *
+ #* @Article{Huber:2009xx,
+ #*  author = "Huber, P and Lindner, M and Schwetz, T and Winter, W",
+ #*  title = "First hint for CP violation in neutrino oscillations 
+ #*           from upcoming superbeam and reactor experiments",
+ #*  year = "2009",
+ #*  eprint = "arXiv:0907.1896"		
+ #* }
+ *
+ * The AEDL file is modified to match the Double Chooz data from the Neutrino 2020 conference.
+ * This file provides the simulated events for the FAR detector data.
+ * Matching is done by Sampsa Vihonen. Last edited on 2020-09-24.
+ *
+ * sampsa@mail.sysu.edu.cn
+ *
+ */
+
+
+/* ####### Reactor flux ####### */
+
+nuflux(#DoubleChooz)<
+        @flux_file = "../DoubleChooz/Reactor.dat"
+        @time      = 1276.0	/* days */
+        @power     = 8.4	/* GWth */
+        @norm      = 1.0e-12
+>
+
+
+/* ######## Baseline setting ######## */
+
+$profiletype = 3
+$densitytab  = { 1e-6 }
+$lengthtab   = { 1.05  } /* km */
+
+
+/* ####### Detector settings ####### */
+
+$target_mass = 10.60  /* tons (fiducial mass) */
+
+
+/* ####### Energy window ####### */
+
+F = 1.0E-3		/* GLoBES takes energy input as GeV, but reactor energies are in MeV */
+
+$emin =                 1.0*F	/* Low:  1.0 MeV */
+$emax =                 20.0*F	/* High: 20.0 MeV */
+$binsize =              {0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+                         0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+                         0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.50*F, 0.50*F, 
+                         0.50*F, 0.50*F, 1.0*F, 1.0*F, 2.0*F, 2.0*F, 2.0*F, 2.0*F}
+
+$sampling_min =         1.0*F	/* Low:  1.0 MeV */
+$sampling_max =         20.5*F	/* High: 20.0 MeV */
+$sampling_stepsize =    {0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+                         0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+                         0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.50*F, 0.50*F, 
+                         0.50*F, 0.50*F, 1.0*F, 1.0*F, 2.0*F, 2.0*F, 2.0*F, 2.0*F}
+
+
+/* ######## Technical information ######## */
+
+$filter_state = 0 
+$filter_value = 1000000 
+
+
+/* ####### Energy resolution ####### */
+
+energy(#ERES)<
+        @type = 1
+        @sigma_function = #inverse_beta
+        @sigma_e = {0.12,0,0}// We obtain this from GLoBEs course with respect to DoubleChooz
+>
+
+
+/* ####### Cross sections ####### */
+
+cross(#Reactor_CC)<
+        @cross_file = "../DoubleChooz/XCCreactor.dat"
+>
+
+
+/* ####### Energy-dependent efficiencies and pre-smearing backgrounds ####### */
+
+
+/* Efficiencies (at bin centers) */
+%FDeffs = {608593.430905364, 181.416795113725, 1.63241382046305, 0.242917958215798, 0.106631188113844, 
+           0.070700096978718, 0.054177136408208, 0.043330550651637, 0.036570091763039, 0.032016901578981, 
+           0.028502113384491, 0.025842847137499, 0.024148535259491, 0.022972822654051, 0.022321682051922, 
+           0.02170933530734, 0.021544954310361, 0.020868020967119, 0.020601381524989, 0.021014861999697, 
+           0.021384675558852, 0.021374623994469, 0.020621532752548, 0.019501866014059, 0.01962874984743, 
+           0.018887345215148, 0.018882648348128, 0.017729597896182, 0.010629547391166, 0.016332229723092,
+           0.027964514411455, 0.056390231825532, 0.075120072801386, 0.337024444167833, 2.75451072684553, 0, 0, 0}
+
+/* Post-smearing backgrounds (as function of energy) */
+%BGenergs = {1.12837837838*F, 1.35135135135*F, 1.61486486486*F, 1.87837837838*F, 2.14189189189*F, 2.42567567568*F,
+             2.62837837838*F, 2.89189189189*F, 3.15540540541*F, 3.39864864865*F, 3.70270270270*F, 3.94594594595*F,
+             4.18918918919*F, 4.37162162162*F, 4.63513513514*F, 4.85810810811*F, 5.18243243243*F, 5.42567567568*F,
+             5.75000000000*F, 6.01351351351*F, 6.23648648649*F, 6.56081081081*F, 6.78378378378*F, 7.06756756757*F,
+             7.37162162162*F, 7.61486486486*F, 7.85810810811*F, 8.26351351351*F, 8.70945945946*F, 9.25675675676*F,
+             9.76351351351*F, 10.4932432432*F, 11.4864864865*F, 12.9864864865*F, 14.9729729730*F, 16.9797297297*F,
+             18.9864864865*F}
+%BGvalues = {1477.89755322, 1348.98600178, 933.169180658, 689.51878708, 560.646011866, 546.570243127,
+             532.416921943, 303.11373066, 188.588157742, 203.168017372, 174.764434449, 174.997091783,
+             146.535344527, 146.709837528, 175.656287564, 204.563961379, 219.221373454, 176.412423902,
+             176.722633681, 176.974679127, 177.18794835, 177.498158129, 163.364225057, 177.98286091,
+             149.579277987, 149.811935321, 150.044592656, 121.737950289, 107.81728644, 108.340765443,
+             94.4782659273, 95.1762379309, 67.4318507891, 54.5193687231, 27.7249990306, 72.6860289271,
+             60.2582496413}
+
+/* Post-smearing backgrounds are interpolated at bin centers */
+%bc = bincenter()
+%bg = interpolation(%BGenergs,%BGvalues,1,%bc)
+
+
+
+/* ####### Channel definitions ####### */
+
+channel(#nu_e_disappearance)<
+        @channel   =    #DoubleChooz:      -  :      e  :      e : #Reactor_CC : #ERES
+        @post_smearing_efficiencies = copy(%FDeffs)
+	@post_smearing_background = copy(%bg)
+>
+
+
+/* ####### Setting the rules ####### */
+
+rule(#NU_E_Disappearance)<
+        @signal     = 1.0@#nu_e_disappearance   /* Efficinecies are given in the channel definition */
+   
+        @background = 0.0@#nu_e_disappearance   /* Background is given in the channel definition */
+
+        @sys_off_function = "chiNoSysSpectrum"
+        @sys_off_errors   = {}
+
+        @sys_on_function  = "chiDCNorm"
+        @sys_on_errors    = { 0.076, 0.068, 0.068, 0.017, 0.017 }
+>
+

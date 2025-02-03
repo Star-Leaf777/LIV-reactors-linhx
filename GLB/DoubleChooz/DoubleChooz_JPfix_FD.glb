@@ -1,0 +1,230 @@
+%!GLoBES
+
+$version="3.2.18.0"
+
+/*  THIS FILE CONTAINS ONLY DOUBLE CHOOZ */
+
+/*********************************************************************************
+* 
+* THIS IS THE DEFINITION OF THE DOUBLE CHOOZ ND
+* 
+* @article{DoubleChooz:2019qbj,
+*       author         = "de Kerret, H. and others",
+*       title          = "{First Double Chooz $\mathbf{\theta_{13}}$ Measurement
+*                         via Total Neutron Capture Detection}",
+*       collaboration  = "Double Chooz",
+*       year           = "2019",
+*       eprint         = "1901.09445",
+*       archivePrefix  = "arXiv",
+*       primaryClass   = "hep-ex",
+*       SLACcitation   = "%%CITATION = ARXIV:1901.09445;%%"
+* }
+*
+**********************************************************************************/
+
+/*********************************************************************************
+*   Special edited by Haixing.Lin.
+*   In order to fix the latest data from neutrino 2020 conference
+**********************************************************************************/
+
+/*********************************************************************************
+* 
+* THIS IS THE DEFINITION OF THE DOUBLE CHOOZ FD Fluxes_file are not perfectly suitable, but it works.
+*
+**********************************************************************************/
+
+/*
+  Experimental specifics for DC FD
+*/
+
+/* ####### Reactor flux ####### */
+
+nuflux(#PureU235)<
+	@flux_file="../GLB/DoubleChooz/Fluxes/Pure_U235_SM.dat"
+	@time = 1276.0		/* days */
+	@power = 8.5 	/* GW thermal */
+	@norm = 0.8678*0.52E7
+>
+
+nuflux(#PureU238)<
+	@flux_file="../GLB/DoubleChooz/Fluxes/Pure_U235_SM.dat"
+	@time = 1276.0		/* days */
+	@power = 8.5 	/* GW thermal */
+	@norm = 0.8678*0.52E7
+>
+
+nuflux(#PurePu239)<
+	@flux_file="../GLB/DoubleChooz/Fluxes/Pure_U235_SM.dat"
+	@time = 1276.0		/* days */
+	@power = 8.5 	/* GW thermal */
+	@norm = 0.8678*0.52E7
+>
+
+nuflux(#PurePu241)<
+	@flux_file="../GLB/DoubleChooz/Fluxes/Pure_U235_SM.dat"
+	@time = 1276.0		/* days */
+	@power = 8.5 	/* GW thermal */
+	@norm = 0.8678*0.52E7
+>
+nuflux(#Background0)<
+	@flux_file="../GLB/DoubleChooz/Fluxes/Pure_Pu241_SM.dat"
+	@time = 587.0		/* days */
+	@power = 8.5 	/* GW thermal */
+	@norm = 0/*Only use for background*/
+>
+
+
+/* ####### Detector settings ####### */
+
+$target_mass = 10.60  /* tons (fiducial mass),10.3m^3 Gd-Ls from https://arxiv.org/pdf/hep-ex/0606025.pdf */
+
+/* ####### Energy window ####### */
+
+
+F = 1.0E-3
+
+e_shift = 0.8 //Trigger energy for inverse_beta is 1.8 MeV
+
+$emin =                 (1.0+e_shift)*F	/* Low:  1.0 MeV */
+$emax =                 (20.0+e_shift)*F	/* High: 20.0 MeV */
+$binsize =              {0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+                         0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+                         0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.50*F, 0.50*F, 
+                         0.50*F, 0.50*F, 1.0*F, 1.0*F, 2.0*F, 2.0*F, 2.0*F, 2.0*F}
+
+$sampling_min =         (1.0+e_shift)*F	/* Low:  1.0 MeV */
+$sampling_max =         (20.5+e_shift)*F	/* High: 20.0 MeV */
+$sampling_stepsize =    {0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+                         0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 
+                         0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.25*F, 0.50*F, 0.50*F, 
+                         0.50*F, 0.50*F, 1.0*F, 1.0*F, 2.0*F, 2.0*F, 2.0*F, 2.0*F}
+
+/* ######## Baseline setting ######## */
+
+$profiletype = 		3 
+$densitytab = 		{1e-6}
+$lengthtab = 		{1.05165} /* km */
+
+/* ######## Technical information ######## */
+
+$filter_state = 1
+$filter_value = 0.0001 
+
+/* ####### Energy resolution ####### */
+
+energy(#ERES)<
+        @type = 1
+        @sigma_function = #inverse_beta
+        @sigma_e = {0.12,0,0}
+>
+
+
+/* ####### Cross sections ####### */
+
+cross(#Reactor_CC)<
+@cross_file = "../GLB/DoubleChooz/Fluxes/IBDnew.dat"
+>
+
+
+/* ####### Energy-dependent efficiencies and pre-smearing backgrounds ####### */
+
+%FDeffs={2.2138367660,1.5734153329,1.3678213178,1.2615534871,1.1800983083,
+1.1181232074,1.0934017231,1.0577987580,1.0318357809,1.0281316430,
+1.0323395564,1.0301900810,1.0195609873,1.0102198983,1.0224380281,
+1.0325283311,1.0437692256,1.0474714552,1.0451160039,1.0628502362,
+1.1057852064,1.1257661881,1.1146741119,1.1047031410,1.1437760222,
+1.1044289281,0.8112339777,0.00,0.00,0.00,
+0.00,0.00,0.00,0.00,0.00,
+0.00,0.00,0.00}
+
+/* Post-smearing backgrounds (as function of energy) */
+B = 1
+%BGaccident = {
+1493.0053689436763*B,1365.4266459247774*B,943.4192129007605*B,703.037483810693*B,580.3513415674139*B,
+576.0219260673198*B,497.04700702280064*B,308.4442950431565*B,236.97349263941834*B,180.12172672749588*B,
+73.62560638965041*B,18.84469624021877*B,26.613848825727104*B,52.84776300242915*B,63.956838695409786*B,
+61.31770046291787*B,53.241047799170616*B,47.41527326640963*B,45.674140718766196*B,46.64047038927522*B,
+48.904087483677294*B,51.05481720771292*B,51.875971529019054*B,51.14581977826976*B,49.740979550079444*B,
+51.41460034990816*B,57.69733712436895*B,60.21473337686945*B,35.805804038237035*B,2.735899766870661*B,
+9.080010700341958*B,22.024352986936456*B,17.25406409577868*B,0.4811793660071384*B,20.625290256426627*B,
+4.345534707238594*B,5.687090887315688*B,5.687278180540091*B}
+
+%BGLi = {
+119.76285192912944*B,134.21542312443836*B,111.73944199628488*B,139.7259973133737*B,164.89223033137608*B,
+149.10082169434918*B,134.98946473747498*B,168.43645478700986*B,183.75348304700904*B,180.67934358648645*B,
+187.9571894420104*B,181.36049228186778*B,161.9658967987338*B,160.86060950749066*B,181.0341571787346*B,
+202.08032032085129*B,225.72824985473213*B,199.53964531003737*B,183.87938160669373*B,188.95945365979017*B,
+187.36641532945953*B,187.40792106446398*B,188.42824296598295*B,187.0127472454941*B,180.7216369924463*B,
+170.79573760990317*B,158.95698045110913*B,146.45435908977908*B,128.16046713421494*B,111.80902994082707*B,
+111.7282820682126*B,107.45845964941697*B,79.70651517455516*B,62.80780416196805*B,16.77406171477694*B,
+19.88112349195937*B,26.092621191031323*B,20.854397544175004*B}
+
+%BGFastneutron = {
+72.1984060484551*B,75.08496538655461*B,75.80335208129631*B,68.11086023199533*B,55.68205080817517*B,
+49.422877348719*B,50.709975334689396*B,51.89266962386254*B,51.467314929814556*B,51.020378688426206*B,
+51.08126328192336*B,51.22468678745775*B,51.228622389262206*B,51.181938530572225*B,51.166718788893455*B,
+51.17640749106718*B,51.18707006181575*B,51.187162139812536*B,51.18459578917306*B,51.18526412259279*B,
+51.186285979038026*B,51.18355441189898*B,51.17698050366146*B,51.17406377539979*B,51.18314631356818*B,
+51.207547964148674*B,51.22425273620454*B,51.2016417117686*B,51.08913378975669*B,51.440286109753906*B,
+50.807634573099065*B,45.15523551343306*B,34.61855370938749*B,30.80940117117768*B,3.0946755721610097*B,
+21.091336216848912*B,9.098553164346237*B,7.083268814419796*B}
+
+/* ####### Channel definitions ####### */
+
+
+//Signal
+channel(#U235_CC)<
+	@channel = 	#PureU235:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%FDeffs)
+>
+
+channel(#U238_CC)<
+	@channel = 	#PureU238:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%FDeffs)
+>
+
+channel(#Pu239_CC)<
+	@channel = 	#PurePu239:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%FDeffs)
+>
+
+channel(#Pu241_CC)<
+	@channel = 	#PurePu241:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_efficiencies = copy(%FDeffs)
+>
+
+//Background
+channel(#BGaccident)<
+	@channel = 	#Background0:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_background = copy(%BGaccident)	
+>
+channel(#BGLi)<
+	@channel = 	#Background0:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_background = copy(%BGLi)	
+>
+channel(#BGFastneutron)<
+	@channel = 	#Background0:	-:	e:	e:	#Reactor_CC:    #ERES
+	@post_smearing_background = copy(%BGFastneutron)	
+>
+
+
+/* ####### Setting the rules ####### */
+
+
+
+rule(#NU_E_Disappearance_FD)<
+        @signal     = 1.0@#U235_CC : 1.0@#U238_CC : 1.0@#Pu239_CC : 1@#Pu241_CC	
+        /* Efficinecies are given in the channel definition */
+   
+        @background = 1.0@#BGaccident: 1.0@#BGLi : 1.0@#BGFastneutron   /* Background is given in the channel definition */
+
+
+        @sys_off_function = "chiNoSysSpectrum"
+        @sys_off_errors   = {}
+
+        @sys_on_function  = "chiDCNorm"
+        // @sys_on_errors    = { 0.076, 0.068, 0.068, 0.017, 0.017 }这一项是对th13的不确定贡献，与定义不同
+		@sys_on_errors    =   { 0.0227, 0.0075, 0.0075, 0.0007, 0.0007 }
+>
+
+/**********************END*******************************/
