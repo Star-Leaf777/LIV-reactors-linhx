@@ -10,7 +10,7 @@ include_directories(${MPI_INCLUDE_PATH})
 
 
 
-set(target_sources reactor_fluxcheck.c myio.c)
+set(target_sources reactor_fluxcheck.c myio.c Lorentz_violation_lat.h)
 list(TRANSFORM target_sources PREPEND "code_source/")
 add_executable(reactor_fluxcheck ${target_sources})
 
