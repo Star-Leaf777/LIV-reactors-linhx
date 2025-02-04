@@ -18,3 +18,12 @@ target_link_libraries(reactor_fluxcheck
     -L/usr/local/lib -Wl,-rpath -Wl,/usr/local/lib -lglobes -L/usr/local/lib
     -lgsl -lgslcblas -lm -lm -static
 )
+
+set(target_sources LIV_minizer_lat.c myio.c DoubleChooz_chi.h RENO_chi.h DayaBay_chi.h Lorentz_violation_lat.h glbmath_lat.h)
+list(TRANSFORM target_sources PREPEND "code_source/")
+add_executable(LIV_minizer_lat ${target_sources})
+
+target_link_libraries(LIV_minizer_lat
+    -L/usr/local/lib -Wl,-rpath -Wl,/usr/local/lib -lglobes -L/usr/local/lib
+    -lgsl -lgslcblas -lm -lm -static
+)

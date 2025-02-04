@@ -3,3 +3,5 @@
 
 # 忽略 Data 文件夹及其所有内容
 /Data/
+# 忽略 .vscode 
+/.vscode/
