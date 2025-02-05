@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include <gsl/gsl_multimin.h>
+#include <gsl/gsl_roots.h>
 #include <globes/globes.h> /* GLoBES library */
 
 #define SQR(x) ((x) * (x)) /* macro to calculate squares */
@@ -114,10 +115,10 @@ double Collab_2DChi2(const gsl_vector *v, void *params)
  * out[0-2]---vec[0-2]       *
  * out[3]---Collab_Chi2      *
  *****************************/
-#define GLB_TH13_ONLY   -1  // 仅优化 th13
-#define GLB_TH13_LIV    -2  // 优化 th13 + liv_value
-#define GLB_2D          -3  // 优化 th13 + dm31
-#define GLB_2D_LIV      -4  // 优化全部三个参数
+#define GLB_TH13_ONLY   -1  // th13
+#define GLB_TH13_LIV    -2  // liv + th13
+#define GLB_2D          -3  // th13 + dm31
+#define GLB_2D_LIV      -4  // liv + th13 + dm31
 void LIV_minizer(double (*chi2_func)(const gsl_vector *v, void *params),
                  glb_params test_values, double *out, int GLB_CHOICE, int LIV_target)
 {
@@ -131,16 +132,16 @@ void LIV_minizer(double (*chi2_func)(const gsl_vector *v, void *params),
   int status;
   double size;
 
-  // 参数物理特性配置
+  // Oscillation Parameter scale evalution
   const double param_scales[] = {1, 0.1, 2.5e-3};  // [liv_value, th13, dm31]
   const double step_ratio = 0.1;
   const size_t total_dim = 3;
 
-  // 初始化参数向量
+  // Minizer vector setting up
   ss = gsl_vector_alloc(total_dim);
   x = gsl_vector_alloc(total_dim);
   
-  // 从 test_values 获取初始值（后续可能覆盖）
+  // Get initial value from test_value
   glb_params initial_params = glbAllocParams();
   glbCopyParams(test_values, initial_params);
   double liv_init = glbGetOscParams(initial_params, Target_Parameter);
@@ -148,48 +149,48 @@ void LIV_minizer(double (*chi2_func)(const gsl_vector *v, void *params),
   double dm31_init = glbGetOscParams(initial_params, GLB_DM_31);
   glbFreeParams(initial_params);
 
-  // 根据模式调整初始值和步长
+  // Switch mode
   switch (GLB_CHOICE) {
-    case GLB_TH13_ONLY:  // 仅优化 th13
-      liv_init = 0.0;    // 强制固定 liv_value
+    case GLB_TH13_ONLY:  // th13
+      liv_init = 0.0;    // liv_value = 0
       for (int i=0; i<total_dim; i++)
         gsl_vector_set(ss, i, (i == 1) ? param_scales[i]*step_ratio : 0.0);
       break;
 
-    case GLB_TH13_LIV:   // 优化 th13 + liv_value
+    case GLB_TH13_LIV:   // liv_value + th13
       for (int i=0; i<total_dim; i++)
         gsl_vector_set(ss, i, (i < 2) ? param_scales[i]*step_ratio : 0.0);
       break;
 
-    case GLB_2D:         // 优化 th13 + dm31
-      liv_init = 0.0;    // 强制固定 liv_value
+    case GLB_2D:         // th13 + dm31
+      liv_init = 0.0;    
       for (int i=0; i<total_dim; i++)
         gsl_vector_set(ss, i, (i > 0) ? param_scales[i]*step_ratio : 0.0);
       break;
 
-    case GLB_2D_LIV:     // 优化全部三个参数
+    case GLB_2D_LIV:     // ALL
       for (int i=0; i<total_dim; i++)
         gsl_vector_set(ss, i, param_scales[i]*step_ratio);
       break;
 
     default:
       fprintf(stderr, "[ERROR] Undefined GLB_CHOICE=%d\n", GLB_CHOICE);
-      exit(EXIT_FAILURE); // 直接终止程序
+      exit(EXIT_FAILURE); // Break up
   }
 
-  // 设置初始参数向量（注意覆盖liv_init）
+  // Initial vector
   gsl_vector_set(x, 0, liv_init);
   gsl_vector_set(x, 1, th13_init);
   gsl_vector_set(x, 2, dm31_init);
 
-  // 配置优化器
+  // Minizer configuration
   minex_func.n = total_dim;
   minex_func.f = chi2_func;
   minex_func.params = test_values;
   s = gsl_multimin_fminimizer_alloc(T, total_dim);
   gsl_multimin_fminimizer_set(s, &minex_func, x, ss);
 
-  // 优化迭代（与原始逻辑一致）
+  // Minimum iteration 
   do {
     iter++;
     status = gsl_multimin_fminimizer_iterate(s);
@@ -198,17 +199,173 @@ void LIV_minizer(double (*chi2_func)(const gsl_vector *v, void *params),
     status = gsl_multimin_test_size(size, 1e-7);
   } while (status == GSL_CONTINUE && iter < 100);
 
-  // 输出结果
+  // Output
   out[0] = gsl_vector_get(s->x, 0);
   out[1] = gsl_vector_get(s->x, 1);
   out[2] = gsl_vector_get(s->x, 2);
   out[3] = s->fval;
 
-  // 释放资源
+  // Free vector
   gsl_vector_free(ss);
   gsl_vector_free(x);
   gsl_multimin_fminimizer_free(s);
 }
+
+/* 辅助结构体用于传递固定参数 */
+struct root_params {
+    double th13_fixed;
+    double dm31_fixed;
+    glb_params params;
+    double (*chi2_func)(const gsl_vector *, void *);
+    double target_chi2;
+    int LIV_target;
+};
+
+/* 计算固定参数时的卡方差异 */
+static double liv_chi2_diff(double liv, void *params) 
+{
+    struct root_params *p = (struct root_params *)params;
+    gsl_vector *v = gsl_vector_alloc(3);
+    
+    /* 设置参数向量: [LIV, th13_fixed, dm31_fixed] */
+    gsl_vector_set(v, 0, liv);
+    gsl_vector_set(v, 1, p->th13_fixed);
+    gsl_vector_set(v, 2, p->dm31_fixed);
+
+    /* 创建临时参数副本 */
+    glb_params test_values = glbAllocParams();
+    glbCopyParams(p->params, test_values);
+    glbSetOscParams(test_values, liv, p->LIV_target);
+
+    /* 计算卡方值 */
+    double current_chi2 = p->chi2_func(v, test_values);
+    
+    /* 清理资源 */
+    glbFreeParams(test_values);
+    gsl_vector_free(v);
+    
+    return current_chi2 - p->target_chi2;
+}
+
+/* 主函数：计算LIV参数的1σ边界 */
+void LIV_sigma(double (*chi2_func)(const gsl_vector *, void *), double *out,
+               glb_params test_values, int LIV_target,
+               double *sigma_low, double *sigma_high) {
+    const int max_iter = 100;
+    const double initial_step = 0.05;  // 初始步长，根据标准差设置
+    const double tolerance = 1e-5;    // 容差，可根据需要调整
+    const double max_tolerance = 1e-3; // 最大容差，用于未收敛时调整
+
+    double liv_min = out[0];
+    double th13_min = out[1];
+    double dm31_min = out[2];
+    double chi2_min = out[3];
+    double target_chi2 = chi2_min + 1.0;
+
+    /* 初始化根查找参数 */
+    struct root_params r_params = {
+        .th13_fixed = th13_min,
+        .dm31_fixed = dm31_min,
+        .params = test_values,
+        .chi2_func = chi2_func,
+        .target_chi2 = target_chi2,
+        .LIV_target = LIV_target
+    };
+
+    gsl_function F;
+    F.function = &liv_chi2_diff;
+    F.params = &r_params;
+
+    /* 配置GSL根查找器 */
+    const gsl_root_fsolver_type *T = gsl_root_fsolver_brent;
+    gsl_root_fsolver *s = gsl_root_fsolver_alloc(T);
+
+    /***************************
+     * 查找左边界 (LIV < liv_min)
+     ***************************/
+    double low = liv_min - initial_step;
+    double high = liv_min;
+    int status = gsl_root_fsolver_set(s, &F, low, high);
+
+    if (status == GSL_SUCCESS) {
+        int iter = 0;
+        do {
+            iter++;
+            status = gsl_root_fsolver_iterate(s);
+            *sigma_low = gsl_root_fsolver_root(s);
+            low = gsl_root_fsolver_x_lower(s);
+            high = gsl_root_fsolver_x_upper(s);
+            status = gsl_root_test_interval(low, high, 0, tolerance);
+        } while (status == GSL_CONTINUE && iter < max_iter);
+
+        if (status == GSL_SUCCESS) {
+            printf("左边界搜索成功：sigma_low = %.6f\n", *sigma_low);
+        } else {
+            printf("左边界搜索失败：未在最大迭代次数内收敛，尝试增大容差\n");
+            // 增大容差，尝试重新搜索
+            status = gsl_root_test_interval(low, high, 0, max_tolerance);
+            if (status == GSL_SUCCESS) {
+                *sigma_low = gsl_root_fsolver_root(s);
+                printf("增大容差后左边界搜索成功：sigma_low = %.6f\n", *sigma_low);
+            } else {
+                printf("增大容差后仍无法收敛，返回默认值\n");
+                *sigma_low = liv_min;  // 返回默认值
+            }
+        }
+    } else {
+        printf("左边界搜索失败：初始区间 [%.6f, %.6f] 内未检测到符号变化\n", low, high);
+        *sigma_low = liv_min;  // 返回默认值
+    }
+
+    /***************************
+     * 查找右边界 (LIV > liv_min)
+     ***************************/
+    low = liv_min;
+    high = liv_min + initial_step;
+    status = gsl_root_fsolver_set(s, &F, low, high);
+
+    if (status == GSL_SUCCESS) {
+        int iter = 0;
+        do {
+            iter++;
+            status = gsl_root_fsolver_iterate(s);
+            *sigma_high = gsl_root_fsolver_root(s);
+            low = gsl_root_fsolver_x_lower(s);
+            high = gsl_root_fsolver_x_upper(s);
+            status = gsl_root_test_interval(low, high, 0, tolerance);
+        } while (status == GSL_CONTINUE && iter < max_iter);
+
+        if (status == GSL_SUCCESS) {
+            printf("右边界搜索成功：sigma_high = %.6f\n", *sigma_high);
+        } else {
+            printf("右边界搜索失败：未在最大迭代次数内收敛，尝试增大容差\n");
+            // 增大容差，尝试重新搜索
+            status = gsl_root_test_interval(low, high, 0, max_tolerance);
+            if (status == GSL_SUCCESS) {
+                *sigma_high = gsl_root_fsolver_root(s);
+                printf("增大容差后右边界搜索成功：sigma_high = %.6f\n", *sigma_high);
+            } else {
+                printf("增大容差后仍无法收敛，返回默认值\n");
+                *sigma_high = liv_min;  // 返回默认值
+            }
+        }
+    } else {
+        printf("右边界搜索失败：初始区间 [%.6f, %.6f] 内未检测到符号变化\n", low, high);
+        *sigma_high = liv_min;  // 返回默认值
+    }
+
+    /* 清理资源 */
+    gsl_root_fsolver_free(s);
+}
+
+double LIV_th13bestift[12]={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+double LIV_th13fitsigma[12]={1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+double LIV_2Dbestift[12]={0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+double LIV_2Dfitsigma[12]={1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+
+
+
+
 
 #define TH13_MODE -5 // Chi2TH13cons_cal
 #define D2_MODE -6 // Chi2D2cons_cal
@@ -265,7 +422,7 @@ double LIV_th13div(const gsl_vector *v, void *params)
   LIV_minizer(DYB_Chi2, test_values, result, GLB_TH13_ONLY,Target_Parameter);
   th13_DYB = result[1];chi2_DYB = result[3];
 
-  div_liv = Chi2TH13cons_cal(th13_DC, th13_RN, th13_DYB);
+  div_liv = Chi2TH13cons_cal(th13_DC, th13_RN, th13_DYB)+SQR(LIV_parameter-LIV_th13bestift[Target_Parameter-6])/SQR(LIV_th13fitsigma[Target_Parameter-6]);
 
   glbFreeParams(test_values);
   glbFreeParams(minimum);
@@ -292,7 +449,7 @@ double LIV_2Ddiv(const gsl_vector *v, void *params)
   LIV_minizer(DYB_Chi2, test_values, result, GLB_2D,Target_Parameter);
   th13_DYB = result[1];dm31_DYB = result[2];chi2_DYB = result[3];
 
-  div_liv = Chi2D2cons_cal(th13_RN,dm31_RN,th13_DYB,th13_DYB);
+  div_liv = Chi2D2cons_cal(th13_RN,dm31_RN,th13_DYB,th13_DYB)+SQR(LIV_parameter-LIV_2Dbestift[Target_Parameter-6])/SQR(LIV_2Dfitsigma[Target_Parameter-6]);
 
   glbFreeParams(test_values);
   glbFreeParams(minimum);
