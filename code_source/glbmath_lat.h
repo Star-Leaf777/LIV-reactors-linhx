@@ -75,7 +75,7 @@ double DYB_Chi2(const gsl_vector *v, void *params)
   glbSetOscParams(test_values, liv_value, Target_Parameter);
   glbSetOscParams(test_values, th13, GLB_THETA_13);
   glbSetOscParams(test_values, dm31, GLB_DM_31);
-  glbSetOscParams(test_values, polar_angle_RN, GLB_Lat);
+  glbSetOscParams(test_values, polar_angle_DYB, GLB_Lat);
   glb_params minimum = glbAllocParams();
 
   res = glbChiNP(test_values, minimum, GLB_ALL);
