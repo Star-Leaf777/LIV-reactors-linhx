@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include <globes/globes.h> /* GLoBES library */
 #include "Lorentz_violation_lat.h"
@@ -66,7 +67,6 @@ char MYFILE1[] = "../Data/all_reactor_div/LIV_BC31_theta13_DC.dat";
 char MYFILE2[] = "../Data/all_reactor_div/LIV_BC31_theta13_RN.dat";
 char MYFILE3[] = "../Data/all_reactor_div/LIV_BC31_theta13_DYB.dat";
 
-
 double xmin = 0.0600;
 double xmax = 0.1400;
 int xsteps = 800;
@@ -74,7 +74,6 @@ int xsteps = 800;
 double ymin = 2.200e-3;
 double ymax = 3.200e-3;
 int ysteps = 1000;
-
 
 int main(int argc, char *argv[])
 {
@@ -131,7 +130,6 @@ int main(int argc, char *argv[])
   glb_params minimum = glbAllocParams();
   glb_params minimum_t = glbAllocParams();
   glb_projection LIV_projection = glbAllocProjection();
-
 
   /* Set the parameter vector */
   glbDefineParams(central_values, theta12, theta13, theta23, deltacp, sdm, ldm);
@@ -206,68 +204,72 @@ int main(int argc, char *argv[])
   /* Initiate a parameter vector for the scan */
   glbCopyParams(central_values, test_values);
   double th13result_save[4];
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_ONLY,GLB_AS_210);
-  printf("The Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AS_210);
-  printf("The Best AS210 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AS_211);
-  printf("The Best AS211 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AC_210);
-  printf("The Best AC210 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AC_211);
-  printf("The Best AC211 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_BS_21);
-  printf("The Best BS21 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_BC_21);
-  printf("The Best BC21 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AS_310);
-  printf("The Best AS310 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AS_311);
-  printf("The Best AS311 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AC_310);
-  printf("The Best AC310 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AC_311);
-  printf("The Best AC311 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_BS_31);
-  printf("The Best BS31 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
-  LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_BC_31);
-  printf("The Best BC31 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  double sigmath13_save[2] = {0, 0};
+  LIV_minizer(Collab_th13Chi2, test_values, th13result_save, GLB_TH13_ONLY, GLB_AS_210);
+  printf("The Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n", th13result_save[0], SQR(sin(2 * th13result_save[1])), th13result_save[2] - SQR(sin(theta12)) * sdm, th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AS_210);
+  // printf("The Best AS210 = %g + %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],fmax(sigmath13_save[0],sigmath13_save[1]),SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  LIV_sigma(Collab_th13Chi2, test_values, th13result_save, sigmath13_save, GLB_TH13_LIV, GLB_AS_210);
+  printf("The Best AS210 = %g +- %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n", th13result_save[0], fmax(sigmath13_save[0], sigmath13_save[1]), SQR(sin(2 * th13result_save[1])), th13result_save[2] - SQR(sin(theta12)) * sdm, th13result_save[3]);
+  LIV_th13bestift[0] = th13result_save[0];
+  LIV_th13fitsigma[0] = fmax(sigmath13_save[0], sigmath13_save[1]);
 
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AS_211);
+  // printf("The Best AS211 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AC_210);
+  // printf("The Best AC210 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AC_211);
+  // printf("The Best AC211 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_BS_21);
+  // printf("The Best BS21 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_BC_21);
+  // printf("The Best BC21 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AS_310);
+  // printf("The Best AS310 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AS_311);
+  // printf("The Best AS311 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AC_310);
+  // printf("The Best AC310 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_AC_311);
+  // printf("The Best AC311 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_BS_31);
+  // printf("The Best BS31 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
+  // LIV_minizer(Collab_th13Chi2,test_values,th13result_save,GLB_TH13_LIV,GLB_BC_31);
+  // printf("The Best BC31 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",th13result_save[0],SQR(sin(2*th13result_save[1])),th13result_save[2]-SQR(sin(theta12)) * sdm,th13result_save[3]);
 
-  double D2result_save[4];
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D,GLB_AS_210);
-  printf("The Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AS_210);
-  printf("The Best AS210 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AS_211);
-  printf("The Best AS211 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AC_210);
-  printf("The Best AC210 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AC_211);
-  printf("The Best AC211 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_BS_21);
-  printf("The Best BS21 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_BC_21);
-  printf("The Best BC21 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AS_310);
-  printf("The Best AS310 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AS_311);
-  printf("The Best AS311 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AC_310);
-  printf("The Best AC310 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AC_311);
-  printf("The Best AC311 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_BS_31);
-  printf("The Best BS31 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_BC_31);
-  printf("The Best BC31 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
-  /* Destroy parameter vector(s) */
+  // double D2result_save[4];
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D,GLB_AS_210);
+  // printf("The Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AS_210);
+  // printf("The Best AS210 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AS_211);
+  // printf("The Best AS211 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AC_210);
+  // printf("The Best AC210 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AC_211);
+  // printf("The Best AC211 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_BS_21);
+  // printf("The Best BS21 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_BC_21);
+  // printf("The Best BC21 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AS_310);
+  // printf("The Best AS310 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AS_311);
+  // printf("The Best AS311 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AC_310);
+  // printf("The Best AC310 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_AC_311);
+  // printf("The Best AC311 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_BS_31);
+  // printf("The Best BS31 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // LIV_minizer(Collab_2DChi2,test_values,D2result_save,GLB_2D_LIV,GLB_BC_31);
+  // printf("The Best BC31 = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n",D2result_save[0],SQR(sin(2*D2result_save[1])),D2result_save[2]-SQR(sin(theta12)) * sdm,D2result_save[3]);
+  // /* Destroy parameter vector(s) */
   glbFreeParams(central_values);
   glbFreeParams(test_values);
   glbFreeParams(input_errors);
   glbFreeParams(minimum);
   glbFreeProjection(LIV_projection);
-
 
   exit(0);
 }
