@@ -153,7 +153,7 @@ void LIV_minizer(double (*chi2_func)(const gsl_vector *v, void *params),
   switch (GLB_CHOICE)
   {
   case GLB_TH13_ONLY: // th13
-    liv_init = 0.0;   // liv_value = 0
+    // liv_init = 0.0;   // liv_value = 0
     for (int i = 0; i < total_dim; i++)
       gsl_vector_set(ss, i, (i == 1) ? param_scales[i] * step_ratio : 0.0);
     break;
@@ -164,7 +164,7 @@ void LIV_minizer(double (*chi2_func)(const gsl_vector *v, void *params),
     break;
 
   case GLB_2D: // th13 + dm31
-    liv_init = 0.0;
+    // liv_init = 0.0;
     for (int i = 0; i < total_dim; i++)
       gsl_vector_set(ss, i, (i > 0) ? param_scales[i] * step_ratio : 0.0);
     break;
@@ -371,12 +371,12 @@ void LIV_sigma(double (*chi2_func)(const gsl_vector *, void *),
 }
 
 double LIV_th13bestift[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-double LIV_th13fitsigma[12] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+double LIV_th13fitsigma[12] = {1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7};
 double LIV_2Dbestift[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-double LIV_2Dfitsigma[12] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+double LIV_2Dfitsigma[12] = {1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7, 1e7};
 
-#define TH13_MODE -5 // Chi2TH13cons_cal
-#define D2_MODE -6   // Chi2D2cons_cal
+#define SM_MODE -5  // Chi2TH13cons_cal
+#define LIV_MODE -6 // Chi2D2cons_cal
 
 double Chi2TH13cons_cal(double DC_th13, double RN_th13, double DYB_th13)
 {
@@ -384,11 +384,11 @@ double Chi2TH13cons_cal(double DC_th13, double RN_th13, double DYB_th13)
   DC_th13_sigma = 0.012; // standard deviation from reference
   RN_th13_sigma = 0.009;
   DYB_th13_sigma = 0.0024;
-  double div1, div2, div3, fixth13;
-  fixth13 = (DC_th13 / SQR(DC_th13_sigma) + RN_th13 / SQR(RN_th13_sigma) + DYB_th13 / SQR(DYB_th13_sigma)) / (1 / SQR(DC_th13_sigma) + 1 / SQR(RN_th13_sigma) + 1 / SQR(DYB_th13_sigma));
-  div1 = SQR(DC_th13 - fixth13) / SQR(DC_th13_sigma);
-  div2 = SQR(RN_th13 - fixth13) / SQR(RN_th13_sigma);
-  div3 = SQR(DYB_th13 - fixth13) / SQR(DYB_th13_sigma);
+  double div1, div2, div3, sin22fixth13;
+  sin22fixth13 = (SQR(sin(2 * DC_th13)) / SQR(DC_th13_sigma) + SQR(sin(2 * RN_th13)) / SQR(RN_th13_sigma) + SQR(sin(2 * DYB_th13)) / SQR(DYB_th13_sigma)) / (1 / SQR(DC_th13_sigma) + 1 / SQR(RN_th13_sigma) + 1 / SQR(DYB_th13_sigma));
+  div1 = SQR(SQR(sin(2 * DC_th13)) - sin22fixth13) / SQR(DC_th13_sigma);
+  div2 = SQR(SQR(sin(2 * RN_th13)) - sin22fixth13) / SQR(RN_th13_sigma);
+  div3 = SQR(SQR(sin(2 * DYB_th13)) - sin22fixth13) / SQR(DYB_th13_sigma);
   return div1 + div2 + div3;
 }
 double Chi2D2cons_cal(double RN_th13, double RN_dm31, double DYB_th13, double DYB_dm31)
@@ -399,12 +399,12 @@ double Chi2D2cons_cal(double RN_th13, double RN_dm31, double DYB_th13, double DY
   RN_dm31_sigma = 0.16e-3;
   DYB_th13_sigma = 0.0024;
   DYB_dm31_sigma = 0.06e-3;
-  double fixth13, fixdm31;
+  double sin22fixth13, fixdm31;
   double div1, div2;
-  fixth13 = (RN_th13 / SQR(RN_th13_sigma) + DYB_th13 / SQR(DYB_th13_sigma)) / (1 / SQR(RN_th13_sigma) + 1 / SQR(DYB_th13_sigma));
+  sin22fixth13 = (SQR(sin(2 * RN_th13)) / SQR(RN_th13_sigma) + SQR(sin(2 * DYB_th13)) / SQR(DYB_th13_sigma)) / (1 / SQR(RN_th13_sigma) + 1 / SQR(DYB_th13_sigma));
   fixdm31 = (RN_dm31 / SQR(RN_dm31_sigma) + DYB_dm31 / SQR(DYB_dm31_sigma)) / (1 / SQR(RN_dm31_sigma) + 1 / SQR(DYB_dm31_sigma));
-  div1 = SQR(RN_th13 - fixth13) / SQR(RN_th13_sigma) + SQR(RN_dm31 - fixdm31) / SQR(RN_dm31_sigma);
-  div2 = SQR(DYB_th13 - fixth13) / SQR(DYB_th13_sigma) + SQR(DYB_dm31 - fixdm31) / SQR(DYB_dm31_sigma);
+  div1 = SQR(SQR(sin(2 * RN_th13)) - sin22fixth13) / SQR(RN_th13_sigma) + SQR(RN_dm31 - fixdm31) / SQR(RN_dm31_sigma);
+  div2 = SQR(SQR(sin(2 * DYB_th13)) - sin22fixth13) / SQR(DYB_th13_sigma) + SQR(DYB_dm31 - fixdm31) / SQR(DYB_dm31_sigma);
   return div1 + div2;
 }
 
@@ -425,14 +425,17 @@ double LIV_th13div(const gsl_vector *v, void *params)
   LIV_minizer(DC_Chi2, test_values, result, GLB_TH13_ONLY, Target_Parameter);
   th13_DC = result[1];
   chi2_DC = result[3];
+  // printf("DC =%g\t %g\t%g\n",result[0], result[1],result[3]);
   LIV_minizer(RN_Chi2, test_values, result, GLB_TH13_ONLY, Target_Parameter);
   th13_RN = result[1];
   chi2_RN = result[3];
+  // printf("RN =%g\t %g\t%g\n",result[0], result[1],result[3]);
   LIV_minizer(DYB_Chi2, test_values, result, GLB_TH13_ONLY, Target_Parameter);
   th13_DYB = result[1];
   chi2_DYB = result[3];
+  // printf("DYB =%g\t %g\t%g\n",result[0], result[1],result[3]);
 
-  div_liv = Chi2TH13cons_cal(th13_DC, th13_RN, th13_DYB) + SQR(LIV_parameter - LIV_th13bestift[Target_Parameter - 6]) / SQR(LIV_th13fitsigma[Target_Parameter - 6]);
+  div_liv = Chi2TH13cons_cal(th13_DC, th13_RN, th13_DYB)+ SQR(LIV_parameter - LIV_th13bestift[Target_Parameter - 6]) / SQR(LIV_th13fitsigma[Target_Parameter - 6]);
 
   glbFreeParams(test_values);
   glbFreeParams(minimum);
@@ -469,7 +472,7 @@ double LIV_2Ddiv(const gsl_vector *v, void *params)
 
   return div_liv;
 }
-double LIV_div_minizer(double (*chi2_func)(const gsl_vector *v, void *params), glb_params test_values, int LIV_target, double *output)
+double LIV_div_minizer(double (*chi2_func)(const gsl_vector *v, void *params), glb_params test_values, int LIV_target, double *output, int GLB_CHOICE)
 {
   Target_Parameter = LIV_target;
   const gsl_multimin_fminimizer_type *T = gsl_multimin_fminimizer_nmsimplex2;
@@ -485,8 +488,21 @@ double LIV_div_minizer(double (*chi2_func)(const gsl_vector *v, void *params), g
   size_t n = 1;
   ss = gsl_vector_alloc(n);
   x = gsl_vector_alloc(n);
-  gsl_vector_set_all(ss, 0.1);
-  gsl_vector_set_all(x, 0);
+  if (GLB_CHOICE == SM_MODE) // test_value with LIV = 0
+  {
+    gsl_vector_set_all(ss, 0);
+    gsl_vector_set_all(x, 0);
+  }
+  else if (GLB_CHOICE == LIV_MODE)
+  {
+    gsl_vector_set_all(ss, 0.1);
+    gsl_vector_set_all(x, 0);
+  }
+  else
+  {
+    printf("There is no such mode\n");
+    exit(EXIT_FAILURE); // Break up;
+  }
 
   minex_func.n = n;
   minex_func.f = chi2_func;
@@ -507,12 +523,14 @@ double LIV_div_minizer(double (*chi2_func)(const gsl_vector *v, void *params), g
     size = gsl_multimin_fminimizer_size(s);
     status = gsl_multimin_test_size(size, 1e-7);
 
-    if (status == GSL_SUCCESS)
-      printf("Minimum found at:\n");
+    // if (status == GSL_SUCCESS)
+    // {
+    //   printf("Minimum found at:\n");
 
-    printf("%5ld %.10f %10.5f\n", iter,
-           gsl_vector_get(s->x, 0),
-           s->fval);
+    //   printf("%5ld %.10f %10.5f\n", iter,
+    //          gsl_vector_get(s->x, 0),
+    //          s->fval);
+    // }
   } while (status == GSL_CONTINUE && iter < 100);
   double LIV_parameter = 0, div = 0;
   LIV_parameter = gsl_vector_get(s->x, 0);
