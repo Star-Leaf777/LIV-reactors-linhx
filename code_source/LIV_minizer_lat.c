@@ -220,6 +220,8 @@ int main(int argc, char *argv[])
     printf("The Best %s = %g +- %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n", LIV_name[i - 6], th13result_save[0], fmax(sigmath13_save[0], sigmath13_save[1]), SQR(sin(2 * th13result_save[1])), th13result_save[2] - SQR(sin(theta12)) * sdm, th13result_save[3]);
     LIV_th13bestift[i - 6] = th13result_save[0];
     LIV_th13fitsigma[i - 6] = fmax(sigmath13_save[0], sigmath13_save[1]);
+    LIV_div_minizer(LIV_th13div, test_values, GLB_AS_210, LIVth13cons, SM_MODE);
+    printf("SM with %s prior, Chi2Cons. = %g \n", LIV_name[i - 6], LIVth13cons[1]);
     LIV_div_minizer(LIV_th13div, test_values, i, LIVth13cons, LIV_MODE);
     printf("%s = %g, Chi2Cons. = %g \n", LIV_name[i - 6], LIVth13cons[0], LIVth13cons[1]);
   }
@@ -238,6 +240,8 @@ int main(int argc, char *argv[])
     printf("The Best %s = %g +- %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n", LIV_name[i - 6], D2result_save[0], fmax(sigma2D_save[0], sigma2D_save[1]), SQR(sin(2 * D2result_save[1])), D2result_save[2] - SQR(sin(theta12)) * sdm, D2result_save[3]);
     LIV_2Dbestift[i - 6] = D2result_save[0];
     LIV_2Dfitsigma[i - 6] = fmax(sigma2D_save[0], sigma2D_save[1]);
+    LIV_div_minizer(LIV_2Ddiv, test_values, i, LIV2Dcons, SM_MODE);
+    printf("SM with %s prior, Chi2Cons. = %g \n", LIV_name[i - 6], LIV2Dcons[1]);
     LIV_div_minizer(LIV_2Ddiv, test_values, i, LIV2Dcons, LIV_MODE);
     printf("%s = %g, Chi2Cons. = %g \n", LIV_name[i - 6], LIV2Dcons[0], LIV2Dcons[1]);
   }

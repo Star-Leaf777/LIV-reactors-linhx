@@ -361,7 +361,7 @@ void LIV_sigma(double (*chi2_func)(const gsl_vector *, void *),
   /* 最终结果处理 */
   sigma[0] = (bounds[0] < bestfit[0]) ? (bestfit[0] - bounds[0]) : 0.0;
   sigma[1] = (bounds[1] > bestfit[0]) ? (bounds[1] - bestfit[0]) : 0.0;
-  printf("sigma0 = %g, sigma1 = %g\n", sigma[0], sigma[1]);
+  // printf("sigma0 = %g, sigma1 = %g\n", sigma[0], sigma[1]);
   /* 错误处理：当两边搜索都失败时 */
   if (sigma[0] <= 0 && sigma[1] <= 0)
   {
