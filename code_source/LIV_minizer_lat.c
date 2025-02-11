@@ -34,6 +34,7 @@
 #include <globes/globes.h> /* GLoBES library */
 #include "Lorentz_violation_lat.h"
 #include "myio.h" /* my input-output routines */
+#include <gsl/gsl_cdf.h>
 
 #define SQR(x) ((x) * (x)) /* macro to calculate squares */
 
@@ -203,47 +204,22 @@ int main(int argc, char *argv[])
   ///////////////////////
   /* Initiate a parameter vector for the scan */
   glbCopyParams(central_values, test_values);
-  char *LIV_name[] = {"AS210", "AS211", "AC210", "AC211", "BS21", "BC21", "AS310", "AS311", "AC310", "AC311", "BS21", "BC31"};
-  // Theta13 analysis
-  double th13result_save[4];
+  char *LIV_name[] = {"AS210", "AS211", "AC210", "AC211", "BS21", "BC21", "AS310", "AS311", "AC310", "AC311", "BS31", "BC31"};
+
+  double result_save[4];
   double sigmath13_save[2] = {1, 1};
-  double LIVth13cons[2];
-  
-  LIV_minizer(Collab_th13Chi2, test_values, th13result_save, GLB_TH13_ONLY, GLB_AS_210);
-  printf("Theta13 analysis: \nThe Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n", th13result_save[0], SQR(sin(2 * th13result_save[1])), th13result_save[2] - SQR(sin(theta12)) * sdm, th13result_save[3]);
-  LIV_div_minizer(LIV_th13div, test_values, GLB_AS_210, LIVth13cons, SM_MODE);
-  printf("SMLIV = %g, Chi2Cons. = %g without LIV prior\n", LIVth13cons[0], LIVth13cons[1]);
+  double chi2PG, p_value;
 
+  LIV_minizer(SGChi2, test_values, result_save, GLB_SM, GLB_AS_210);
+  chi2PG = PGchi2(test_values, GLB_SM);
+  p_value = gsl_cdf_chisq_Q(chi2PG, 2 + 2 + 1 - 2);
+  printf("SGChi2 analysis: \nThe Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g\n", result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value);
   for (int i = 6; i <= 17; i++)
   {
-    LIV_sigma(Collab_th13Chi2, test_values, th13result_save, sigmath13_save, GLB_TH13_LIV, i);
-    printf("The Best %s = %g +- %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n", LIV_name[i - 6], th13result_save[0], fmax(sigmath13_save[0], sigmath13_save[1]), SQR(sin(2 * th13result_save[1])), th13result_save[2] - SQR(sin(theta12)) * sdm, th13result_save[3]);
-    LIV_th13bestift[i - 6] = th13result_save[0];
-    LIV_th13fitsigma[i - 6] = fmax(sigmath13_save[0], sigmath13_save[1]);
-    LIV_div_minizer(LIV_th13div, test_values, i, LIVth13cons, SM_MODE);
-    printf("SM with %s prior, Chi2Cons. = %g \n", LIV_name[i - 6], LIVth13cons[1]);
-    LIV_div_minizer(LIV_th13div, test_values, i, LIVth13cons, LIV_MODE);
-    printf("%s = %g, Chi2Cons. = %g \n", LIV_name[i - 6], LIVth13cons[0], LIVth13cons[1]);
-  }
-
-  // 2D analysis
-  double D2result_save[4];
-  double sigma2D_save[2]={1,1};
-  double LIV2Dcons[2];
-  LIV_minizer(Collab_2DChi2, test_values, D2result_save, GLB_2D, GLB_AS_210);
-  printf("2D analysis:\nThe Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n", D2result_save[0], SQR(sin(2 * D2result_save[0])), D2result_save[2] - SQR(sin(theta12)) * sdm, D2result_save[3]);
-  LIV_div_minizer(LIV_2Ddiv, test_values, GLB_AS_210, LIV2Dcons, SM_MODE);
-  printf("SMLIV = %g, Chi2Cons. = %g without LIV prior\n", LIV2Dcons[0], LIV2Dcons[1]);
-  for (int i = 6; i <= 17; i++)
-  {
-    LIV_sigma(Collab_2DChi2, test_values, D2result_save, sigma2D_save, GLB_TH13_LIV, i);
-    printf("The Best %s = %g +- %g, Sin^22Theta13 = %g, Dmee = %g, Chi2 = %g\n", LIV_name[i - 6], D2result_save[0], fmax(sigma2D_save[0], sigma2D_save[1]), SQR(sin(2 * D2result_save[1])), D2result_save[2] - SQR(sin(theta12)) * sdm, D2result_save[3]);
-    LIV_2Dbestift[i - 6] = D2result_save[0];
-    LIV_2Dfitsigma[i - 6] = fmax(sigma2D_save[0], sigma2D_save[1]);
-    LIV_div_minizer(LIV_2Ddiv, test_values, i, LIV2Dcons, SM_MODE);
-    printf("SM with %s prior, Chi2Cons. = %g \n", LIV_name[i - 6], LIV2Dcons[1]);
-    LIV_div_minizer(LIV_2Ddiv, test_values, i, LIV2Dcons, LIV_MODE);
-    printf("%s = %g, Chi2Cons. = %g \n", LIV_name[i - 6], LIV2Dcons[0], LIV2Dcons[1]);
+    LIV_minizer(SGChi2, test_values, result_save, GLB_LIV, i);
+    chi2PG = PGchi2(test_values, i);
+    p_value = gsl_cdf_chisq_Q(chi2PG, 3 + 3 + 2 - 3);
+    printf("The Best %s = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g\n", LIV_name[i - 6], result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value);
   }
 
   glbFreeParams(central_values);
