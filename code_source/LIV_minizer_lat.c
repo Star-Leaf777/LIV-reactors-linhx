@@ -63,10 +63,10 @@ inline double likelihood(double true_rate, double fit_rate, double sqr_sigma)
 int Target_Parameter = GLB_AS_210;
 #include "glbmath_lat.h"
 
-char MYFILE0[] = "../Data/all_reactor_div/LIV_BC31_theta13_ALL.dat";
-char MYFILE1[] = "../Data/all_reactor_div/LIV_BC31_theta13_DC.dat";
-char MYFILE2[] = "../Data/all_reactor_div/LIV_BC31_theta13_RN.dat";
-char MYFILE3[] = "../Data/all_reactor_div/LIV_BC31_theta13_DYB.dat";
+char *MYFILES[] = {"../Data/LIV_DC_RN_DYB_AS210.dat", "../Data/LIV_DC_RN_DYB_AS211.dat", "../Data/LIV_DC_RN_DYB_AC210.dat",
+                      "../Data/LIV_DC_RN_DYB_AC211.dat", "../Data/LIV_DC_RN_DYB_BS21.dat", "../Data/LIV_DC_RN_DYB_BC21.dat",
+                      "../Data/LIV_DC_RN_DYB_AS310.dat", "../Data/LIV_DC_RN_DYB_AS311.dat", "../Data/LIV_DC_RN_DYB_AC310.dat",
+                      "../Data/LIV_DC_RN_DYB_AC311.dat", "../Data/LIV_DC_RN_DYB_BS31.dat", "../Data/LIV_DC_RN_DYB_BC31.dat"};
 
 double xmin = 0.0600;
 double xmax = 0.1400;
@@ -205,6 +205,15 @@ int main(int argc, char *argv[])
   /* Initiate a parameter vector for the scan */
   glbCopyParams(central_values, test_values);
   char *LIV_name[] = {"AS210", "AS211", "AC210", "AC211", "BS21", "BC21", "AS310", "AS311", "AC310", "AC311", "BS31", "BC31"};
+  FILE *fp;
+  double xmin = 0.0600, xmax = 0.1400; // sin22th13
+  int xsteps = 800;
+  double ymin = 2.200e-3, ymax = 3.200e-3; // dmee
+  int ysteps = 1000;
+  gsl_vector *v;
+  v = gsl_vector_alloc(3);
+  double x, y;
+  double DCprint, RNprint, DYBprint;
 
   double result_save[4];
   double sigmath13_save[2] = {1, 1};
@@ -213,14 +222,39 @@ int main(int argc, char *argv[])
   LIV_minizer(SGChi2, test_values, result_save, GLB_SM, GLB_AS_210);
   chi2PG = PGchi2(test_values, GLB_SM);
   p_value = gsl_cdf_chisq_Q(chi2PG, 2 + 2 + 1 - 2);
-  printf("SGChi2 analysis: \nThe Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g\n", result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value);
+  printf("The Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g\n", result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value);
   for (int i = 6; i <= 17; i++)
   {
     LIV_minizer(SGChi2, test_values, result_save, GLB_LIV, i);
     chi2PG = PGchi2(test_values, i);
     p_value = gsl_cdf_chisq_Q(chi2PG, 3 + 3 + 2 - 3);
     printf("The Best %s = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g\n", LIV_name[i - 6], result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value);
+    
+    fp = fopen(MYFILES[i-6], "w");
+    if (fp == NULL)
+    {
+      printf("无法打开文件: %s\n", MYFILES[0]);
+      return 1; // 错误退出
+    }
+    Target_Parameter = i;
+    gsl_vector_set(v, 0, result_save[0]);
+    for (x = xmin; x <= xmax; x = x + (xmax - xmin) / (double)xsteps)
+    {
+      for (y = ymin; y <= ymax; y = y + (ymax - ymin) / (double)ysteps)
+      {
+        gsl_vector_set(v, 0, result_save[0]);
+        gsl_vector_set(v, 1, asin(sqrt(x)) / 2);
+        gsl_vector_set(v, 2, y + SQR(sin(theta12)) * sdm);
+        DCprint = DC_Chi2(v, test_values);
+        RNprint = RN_Chi2(v, test_values);
+        DYBprint = DYB_Chi2(v, test_values);
+        fprintf(fp, "%f\t%f\t%f\t%f\t%f\n", x, y, DCprint, RNprint, DYBprint);
+      }
+    }
+    fclose(fp);
   }
+
+  
 
   glbFreeParams(central_values);
   glbFreeParams(test_values);
