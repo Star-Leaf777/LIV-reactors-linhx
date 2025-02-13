@@ -30,6 +30,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdbool.h>
+#include <mpi.h> // 添加MPI头文件
 
 #include <globes/globes.h> /* GLoBES library */
 #include "Lorentz_violation_lat.h"
@@ -64,9 +65,9 @@ int Target_Parameter = GLB_AS_210;
 #include "glbmath_lat.h"
 
 char *MYFILES[] = {"../Data/LIV_DC_RN_DYB_AS210.dat", "../Data/LIV_DC_RN_DYB_AS211.dat", "../Data/LIV_DC_RN_DYB_AC210.dat",
-                      "../Data/LIV_DC_RN_DYB_AC211.dat", "../Data/LIV_DC_RN_DYB_BS21.dat", "../Data/LIV_DC_RN_DYB_BC21.dat",
-                      "../Data/LIV_DC_RN_DYB_AS310.dat", "../Data/LIV_DC_RN_DYB_AS311.dat", "../Data/LIV_DC_RN_DYB_AC310.dat",
-                      "../Data/LIV_DC_RN_DYB_AC311.dat", "../Data/LIV_DC_RN_DYB_BS31.dat", "../Data/LIV_DC_RN_DYB_BC31.dat"};
+                   "../Data/LIV_DC_RN_DYB_AC211.dat", "../Data/LIV_DC_RN_DYB_BS21.dat", "../Data/LIV_DC_RN_DYB_BC21.dat",
+                   "../Data/LIV_DC_RN_DYB_AS310.dat", "../Data/LIV_DC_RN_DYB_AS311.dat", "../Data/LIV_DC_RN_DYB_AC310.dat",
+                   "../Data/LIV_DC_RN_DYB_AC311.dat", "../Data/LIV_DC_RN_DYB_BS31.dat", "../Data/LIV_DC_RN_DYB_BC31.dat"};
 
 double xmin = 0.0600;
 double xmax = 0.1400;
@@ -78,6 +79,10 @@ int ysteps = 1000;
 
 int main(int argc, char *argv[])
 {
+  int rank, size;
+  MPI_Init(&argc, &argv);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
   /* Define central values for the prior function (adopted from neutrino 2022 conference results) */
   double theta12 = asin(sqrt(0.304));
   double theta13 = asin(sqrt(0.0892)) / 2;
@@ -218,19 +223,36 @@ int main(int argc, char *argv[])
   double result_save[4];
   double sigmath13_save[2] = {1, 1};
   double chi2PG, p_value;
-
-  LIV_minizer(SGChi2, test_values, result_save, GLB_SM, GLB_AS_210);
-  chi2PG = PGchi2(test_values, GLB_SM);
-  p_value = gsl_cdf_chisq_Q(chi2PG, 2 + 2 + 1 - 2);
-  printf("The Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g\n", result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value);
-  for (int i = 6; i <= 17; i++)
+  if (rank == 0)
+  {
+    LIV_minizer(SGChi2, test_values, result_save, GLB_SM, GLB_AS_210);
+    chi2PG = PGchi2(test_values, GLB_SM);
+    p_value = gsl_cdf_chisq_Q(chi2PG, 2 + 2 + 1 - 2);
+    printf("The Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g\n", result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value);
+  }
+  /* 并行任务分配 */
+  const int total_tasks = 12; // i范围为6~17，共12个任务
+  int quotient = total_tasks / size;
+  int remainder = total_tasks % size;
+  int start_task, end_task;
+  if (rank < remainder)
+  {
+    start_task = rank * (quotient + 1);
+    end_task = start_task + (quotient + 1);
+  }
+  else
+  {
+    start_task = remainder * (quotient + 1) + (rank - remainder) * quotient;
+    end_task = start_task + quotient - 1;
+  }
+  for (int i = start_task + 6; i <= end_task + 6; i++)
   {
     LIV_minizer(SGChi2, test_values, result_save, GLB_LIV, i);
     chi2PG = PGchi2(test_values, i);
     p_value = gsl_cdf_chisq_Q(chi2PG, 3 + 3 + 2 - 3);
-    printf("The Best %s = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g\n", LIV_name[i - 6], result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value);
-    
-    fp = fopen(MYFILES[i-6], "w");
+    printf("The Best %s = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g, Rank = %d\n", LIV_name[i - 6], result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value, rank);
+
+    fp = fopen(MYFILES[i - 6], "w");
     if (fp == NULL)
     {
       printf("无法打开文件: %s\n", MYFILES[0]);
@@ -254,13 +276,13 @@ int main(int argc, char *argv[])
     fclose(fp);
   }
 
-  
-
   glbFreeParams(central_values);
   glbFreeParams(test_values);
   glbFreeParams(input_errors);
   glbFreeParams(minimum);
   glbFreeProjection(LIV_projection);
+  // End MPI
+  MPI_Finalize();
 
   exit(0);
 }
