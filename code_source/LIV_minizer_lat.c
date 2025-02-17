@@ -63,7 +63,7 @@ inline double likelihood(double true_rate, double fit_rate, double sqr_sigma)
 
 int Target_Parameter = GLB_AS_210;
 #include "glbmath_lat.h"
-
+char SMFILE[]="../Data/SM_DC_RN_DYB.dat";
 char *MYFILES[] = {"../Data/LIV_DC_RN_DYB_AS210.dat", "../Data/LIV_DC_RN_DYB_AS211.dat", "../Data/LIV_DC_RN_DYB_AC210.dat",
                    "../Data/LIV_DC_RN_DYB_AC211.dat", "../Data/LIV_DC_RN_DYB_BS21.dat", "../Data/LIV_DC_RN_DYB_BC21.dat",
                    "../Data/LIV_DC_RN_DYB_AS310.dat", "../Data/LIV_DC_RN_DYB_AS311.dat", "../Data/LIV_DC_RN_DYB_AC310.dat",
@@ -228,7 +228,28 @@ int main(int argc, char *argv[])
     LIV_minizer(SGChi2, test_values, result_save, GLB_SM, GLB_AS_210);
     chi2PG = PGchi2(test_values, GLB_SM);
     p_value = gsl_cdf_chisq_Q(chi2PG, 2 + 2 + 1 - 2);
-    printf("The Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g\n", result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value);
+    printf("The Best SMLIV = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g, rank = %d\n", result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value, rank);
+    // fp = fopen(SMFILE, "w");
+    // if (fp == NULL)
+    // {
+    //   printf("无法打开文件: %s\n", MYFILES[0]);
+    //   return 1; // 错误退出
+    // }
+    // gsl_vector_set(v, 0, result_save[0]);
+    // for (x = xmin; x <= xmax; x = x + (xmax - xmin) / (double)xsteps)
+    // {
+    //   for (y = ymin; y <= ymax; y = y + (ymax - ymin) / (double)ysteps)
+    //   {
+    //     gsl_vector_set(v, 0, result_save[0]);
+    //     gsl_vector_set(v, 1, asin(sqrt(x)) / 2);
+    //     gsl_vector_set(v, 2, y + SQR(sin(theta12)) * sdm);
+    //     DCprint = DC_Chi2(v, test_values);
+    //     RNprint = RN_Chi2(v, test_values);
+    //     DYBprint = DYB_Chi2(v, test_values);
+    //     fprintf(fp, "%f\t%f\t%f\t%f\t%f\n", x, y, DCprint, RNprint, DYBprint);
+    //   }
+    // }
+    // fclose(fp);
   }
   /* 并行任务分配 */
   const int total_tasks = 12; // i范围为6~17，共12个任务
@@ -252,28 +273,28 @@ int main(int argc, char *argv[])
     p_value = gsl_cdf_chisq_Q(chi2PG, 3 + 3 + 2 - 3);
     printf("The Best %s = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g, Rank = %d\n", LIV_name[i - 6], result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value, rank);
 
-    fp = fopen(MYFILES[i - 6], "w");
-    if (fp == NULL)
-    {
-      printf("无法打开文件: %s\n", MYFILES[0]);
-      return 1; // 错误退出
-    }
-    Target_Parameter = i;
-    gsl_vector_set(v, 0, result_save[0]);
-    for (x = xmin; x <= xmax; x = x + (xmax - xmin) / (double)xsteps)
-    {
-      for (y = ymin; y <= ymax; y = y + (ymax - ymin) / (double)ysteps)
-      {
-        gsl_vector_set(v, 0, result_save[0]);
-        gsl_vector_set(v, 1, asin(sqrt(x)) / 2);
-        gsl_vector_set(v, 2, y + SQR(sin(theta12)) * sdm);
-        DCprint = DC_Chi2(v, test_values);
-        RNprint = RN_Chi2(v, test_values);
-        DYBprint = DYB_Chi2(v, test_values);
-        fprintf(fp, "%f\t%f\t%f\t%f\t%f\n", x, y, DCprint, RNprint, DYBprint);
-      }
-    }
-    fclose(fp);
+    // fp = fopen(MYFILES[i - 6], "w");
+    // if (fp == NULL)
+    // {
+    //   printf("无法打开文件: %s\n", MYFILES[0]);
+    //   return 1; // 错误退出
+    // }
+    // Target_Parameter = i;
+    // gsl_vector_set(v, 0, result_save[0]);
+    // for (x = xmin; x <= xmax; x = x + (xmax - xmin) / (double)xsteps)
+    // {
+    //   for (y = ymin; y <= ymax; y = y + (ymax - ymin) / (double)ysteps)
+    //   {
+    //     gsl_vector_set(v, 0, result_save[0]);
+    //     gsl_vector_set(v, 1, asin(sqrt(x)) / 2);
+    //     gsl_vector_set(v, 2, y + SQR(sin(theta12)) * sdm);
+    //     DCprint = DC_Chi2(v, test_values);
+    //     RNprint = RN_Chi2(v, test_values);
+    //     DYBprint = DYB_Chi2(v, test_values);
+    //     fprintf(fp, "%f\t%f\t%f\t%f\t%f\n", x, y, DCprint, RNprint, DYBprint);
+    //   }
+    // }
+    // fclose(fp);
   }
 
   glbFreeParams(central_values);
