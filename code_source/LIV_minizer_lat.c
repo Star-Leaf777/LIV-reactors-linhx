@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
     LIV_minizer(SGChi2, test_values, result_save, GLB_LIV, i);
     chi2PG = PGchi2(test_values, i);
     p_value = gsl_cdf_chisq_Q(chi2PG, 3 + 3 + 2 - 3);
-    printf("The Best %s = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, \nPGChi2 = %g, p-value = %g, Rank = %d\n", LIV_name[i - 6], result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value, rank);
+    printf("The Best %s = %g, Sin^22Theta13 = %g, Dmee = %g, SGChi2 = %g, PGChi2 = %g, p-value = %g, Rank = %d\n", LIV_name[i - 6], result_save[0], SQR(sin(2 * result_save[1])), result_save[2] - SQR(sin(theta12)) * sdm, result_save[3], chi2PG, p_value, rank);
 
     // fp = fopen(MYFILES[i - 6], "w");
     // if (fp == NULL)
