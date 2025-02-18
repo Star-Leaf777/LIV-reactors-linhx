@@ -40,6 +40,7 @@ double DC_Chi2(const gsl_vector *v, void *params)
   // Obtain Chi2 of DoubleChooz
   res = glbChiNP(test_values, minimum, GLB_ALL);
   res = glbChiNP(test_values, minimum, EXP_DC_FD);
+  glbSetSysStartingValuesList(EXP_DC_FD, 0, GLB_ON, sys_dcstartval);
   glbFreeParams(test_values);
   glbFreeParams(minimum);
   return res;
@@ -63,6 +64,7 @@ double RN_Chi2(const gsl_vector *v, void *params)
 
   res = glbChiNP(test_values, minimum, GLB_ALL);
   res = glbChiNP(test_values, minimum, EXP_RENO_FD);
+  glbSetSysStartingValuesList(EXP_RENO_FD, 0, GLB_ON, sys_RNstartval);
   glbFreeParams(test_values);
   glbFreeParams(minimum);
   return res;
@@ -86,6 +88,7 @@ double DYB_Chi2(const gsl_vector *v, void *params)
 
   res = glbChiNP(test_values, minimum, GLB_ALL);
   res = glbChiNP(test_values, minimum, EXP_DYB_EH1);
+  glbSetSysStartingValuesList(EXP_DYB_EH1, 0, GLB_ON, sys_dcstartval);
   glbFreeParams(test_values);
   glbFreeParams(minimum);
   return res;

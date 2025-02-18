@@ -5,6 +5,9 @@
 
 #include <globes/globes.h> /* GLoBES library */
 #define SQR(x) ((x) * (x)) /* macro to calculate squares */
+#define MAX_SYS 200
+double sys_RNerrors[MAX_SYS];       /* Uncertainties of systematics params */
+double sys_RNstartval[MAX_SYS]; 
 /***************************************************************************
  *                      C H I ^ 2   F U N C T I O N S                      *
  ***************************************************************************/
@@ -94,8 +97,10 @@ double chiRENONorm(int exp, int rule, int n_params, double *x, double *errors, v
   }
 
   /* Systematical part of chi^2 (= priors) */
-  for (i = 0; i < n_params; i++)
+  for (i = 0; i < n_params; i++){
     chi2 += SQR(x[i] / errors[i]);
+    sys_RNstartval[i] = x[i];
+  }
   return chi2;
 }
 
