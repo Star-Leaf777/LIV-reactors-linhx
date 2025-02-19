@@ -88,7 +88,7 @@ double DYB_Chi2(const gsl_vector *v, void *params)
 
   res = glbChiNP(test_values, minimum, GLB_ALL);
   res = glbChiNP(test_values, minimum, EXP_DYB_EH1);
-  glbSetSysStartingValuesList(EXP_DYB_EH1, 0, GLB_ON, sys_dcstartval);
+  glbSetSysStartingValuesList(EXP_DYB_EH1, 0, GLB_ON, sys_dybstartval);
   glbFreeParams(test_values);
   glbFreeParams(minimum);
   return res;

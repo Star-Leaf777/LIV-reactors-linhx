@@ -212,9 +212,9 @@ int main(int argc, char *argv[])
   char *LIV_name[] = {"AS210", "AS211", "AC210", "AC211", "BS21", "BC21", "AS310", "AS311", "AC310", "AC311", "BS31", "BC31"};
   FILE *fp;
   double xmin = 0.0600, xmax = 0.1400; // sin22th13
-  int xsteps = 800;
+  int xsteps = 80;
   double ymin = 2.200e-3, ymax = 3.200e-3; // dmee
-  int ysteps = 1000;
+  int ysteps = 100;
   gsl_vector *v;
   v = gsl_vector_alloc(3);
   double x, y;
