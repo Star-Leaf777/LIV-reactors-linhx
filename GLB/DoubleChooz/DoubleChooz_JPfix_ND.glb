@@ -4,24 +4,6 @@ $version="3.2.18.0"
 /*  THIS FILE CONTAINS ONLY DOUBLE CHOOZ */
 
 /*********************************************************************************
-* 
-* THIS IS THE DEFINITION OF THE DOUBLE CHOOZ ND
-* 
-* @article{DoubleChooz:2019qbj,
-*       author         = "de Kerret, H. and others",
-*       title          = "{First Double Chooz $\mathbf{\theta_{13}}$ Measurement
-*                         via Total Neutron Capture Detection}",
-*       collaboration  = "Double Chooz",
-*       year           = "2019",
-*       eprint         = "1901.09445",
-*       archivePrefix  = "arXiv",
-*       primaryClass   = "hep-ex",
-*       SLACcitation   = "%%CITATION = ARXIV:1901.09445;%%"
-* }
-*
-**********************************************************************************/
-
-/*********************************************************************************
 *   Special edited by Haixing.Lin.
 *   In order to fix the latest data from neutrino 2020 conference
 **********************************************************************************/

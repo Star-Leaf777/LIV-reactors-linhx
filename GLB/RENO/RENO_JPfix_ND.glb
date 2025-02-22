@@ -31,7 +31,7 @@ $version="3.0.0"
  *
  */
 
- /*********************************************************************************
+/*********************************************************************************
 *   Special edited by Haixing.Lin.
 *   The glbfile is not to fit oscillation data but provides sensitivity.
 *   ND.glb will produce the exact data when FD.glb gets its minimum

@@ -1,42 +1,5 @@
 %!GLoBES
 
-/* 
-  This file contains a combination of different experiments in constraining
-  the properties of antineutrinos coming from reactors...
-
-  The overall number of events will be irrelevant for what we want to calculate
-  in this module, so we elect to set @time, @power and @target_mass all to unity.
-
-  This particular file deals with spectral measurements. The order of experiments is as
-  follows:
-
-  0 - DANSS (upper position)
-  1 – DANSS (lower position)
-
-  2 - Daya Bay EH1 AD1 (special format to be compatible with NEOS)
-  3 - Daya Bay EH1 AD2 (special format to be compatible with NEOS)
-  4 - Daya Bay EH2 AD3 (special format to be compatible with NEOS)
-  5 - Daya Bay EH2 AD8 (special format to be compatible with NEOS)
-
-  6 - Daya Bay EH3 AD4
-  7 - Daya Bay EH3 AD5
-  8 - Daya Bay EH3 AD6
-  9 - Daya Bay EH3 AD7
-
-  10 - NEOS
-
-  11 - Double Chooz ND
-  12 - Double Chooz FD
-
-  13 - Bugey, 15 m
-  14 - Bugey, 40 m
-
-  15 - RENO ND
-  16 - RENO FD
-
-  THIS FILE CONTAINS ONLY DAYA BAY NEAR DETECTORS
-*/
-
 /*********************************************************************************
 *                                                  
 *       DAYA BAY ANALYSIS
@@ -94,12 +57,28 @@
 *       primaryClass   = "hep-ex",
 *       SLACcitation   = "%%CITATION = ARXIV:1704.01082;%%"
 * }
+*
+* @article{DayaBay:2022orm,
+*       title = {Precision Measurement of Reactor Antineutrino Oscillation at Kilometer-Scale Baselines by Daya Bay},
+*       author = {An, F. P. and Bai, W. D. and Balantekin, A. B. and Bishai, M. and Blyth, S. and Cao, G. F. and Cao, J. and Chang, J. F. and Chang, Y. and Chen, H. S. and others},
+*       collaboration = {Daya Bay Collaboration},
+*       journal = {Phys. Rev. Lett.},
+*       volume = {130},
+*       issue = {16},
+*       pages = {161802},
+*       numpages = {7},
+*       year = {2023},
+*       month = {Apr},
+*       publisher = {American Physical Society},
+*       doi = {10.1103/PhysRevLett.130.161802},
+*       url = {https://link.aps.org/doi/10.1103/PhysRevLett.130.161802}
+}
 * 
 **********************************************************************************/
 
 /*********************************************************************************
 * 
-* THIS IS THE DEFINITION OF EH2：Hyy and Star edited
+* THIS IS THE DEFINITION OF EH1：Hyy and Star edited
 *
 **********************************************************************************/
 

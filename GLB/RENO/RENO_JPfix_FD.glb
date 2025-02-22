@@ -6,22 +6,16 @@ $version="3.2.17.0"
 * 
 * THIS IS THE DEFINITION OF THE RENO FD
 * 
-* @article{Bak:2018ydk,
-*       author         = "Bak, G. and others",
-*       title          = "{Measurement of Reactor Antineutrino Oscillation
-*                         Amplitude and Frequency at RENO}",
-*       collaboration  = "RENO",
-*       journal        = "Phys. Rev. Lett.",
-*       volume         = "121",
-*       year           = "2018",
-*       number         = "20",
-*       pages          = "201801",
-*       doi            = "10.1103/PhysRevLett.121.201801",
-*       eprint         = "1806.00248",
-*       archivePrefix  = "arXiv",
-*       primaryClass   = "hep-ex",
-*       SLACcitation   = "%%CITATION = ARXIV:1806.00248;%%"
-* }
+* @article{Shin:2020mue,
+*    author = "Shin, Changdong",
+*    collaboration = "Reno",
+*    title = "{Recent Results from RENO}",
+*    doi = "10.22323/1.390.0177",
+*    journal = "PoS",
+*    volume = "ICHEP2020",
+*    pages = "177",
+*    year = "2021"
+*}
 *
 **********************************************************************************/
 

@@ -3,34 +3,22 @@
 $version="3.2.18.0"
 
 /*  THIS FILE CONTAINS ONLY DOUBLE CHOOZ */
-
 /*********************************************************************************
-* 
-* THIS IS THE DEFINITION OF THE DOUBLE CHOOZ ND
-* 
-* @article{DoubleChooz:2019qbj,
-*       author         = "de Kerret, H. and others",
-*       title          = "{First Double Chooz $\mathbf{\theta_{13}}$ Measurement
-*                         via Total Neutron Capture Detection}",
-*       collaboration  = "Double Chooz",
-*       year           = "2019",
-*       eprint         = "1901.09445",
-*       archivePrefix  = "arXiv",
-*       primaryClass   = "hep-ex",
-*       SLACcitation   = "%%CITATION = ARXIV:1901.09445;%%"
-* }
+* @article{Soldin:2024fgt,
+*    author = "Soldin, Philipp",
+*    collaboration = "Double Chooz",
+*    title = "{Precision Neutrino Mixing Angle Measurement with the Double Chooz Experiment and Latest Results}",
+*    doi = "10.22323/1.441.0228",
+*    journal = "PoS",
+*    volume = "TAUP2023",
+*    pages = "228",
+*    year = "2024"
+*}
 *
 **********************************************************************************/
-
 /*********************************************************************************
 *   Special edited by Haixing.Lin.
 *   In order to fix the latest data from neutrino 2020 conference
-**********************************************************************************/
-
-/*********************************************************************************
-* 
-* THIS IS THE DEFINITION OF THE DOUBLE CHOOZ FD Fluxes_file are not perfectly suitable, but it works.
-*
 **********************************************************************************/
 
 /*
@@ -223,8 +211,7 @@ rule(#NU_E_Disappearance_FD)<
         @sys_off_errors   = {}
 
         @sys_on_function  = "chiDCNorm"
-        // @sys_on_errors    = { 0.076, 0.068, 0.068, 0.017, 0.017 }这一项是对th13的不确定贡献，与定义不同
-		@sys_on_errors    =   { 0.0227, 0.0075, 0.0075, 0.0007, 0.0007 }
+		    @sys_on_errors    =   { 0.0227, 0.0075, 0.0075, 0.0007, 0.0007 }
 >
 
 /**********************END*******************************/

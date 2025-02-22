@@ -303,139 +303,139 @@ int main(int argc, char *argv[])
   printf("RENO Best-fit value: Sin2 2theta13 = %g , DMee = %g and chi^2_min = %g \n\n", SQR(sin(2 * RNth13_min)), RNdm31_min - SQR(sin(theta12)) * sdm, RNchi_min);
   printf("DYB Best-fit value: Sin2 2theta13 = %g , DMee = %g and chi^2_min = %g \n\n", SQR(sin(2 * DYBth13_min)), DYBdm31_min - SQR(sin(theta12)) * sdm, DYBchi_min);
 
-  // int i, n_bins;
+  int i, n_bins;
 
-  // double *true_rates;
-  // double *bin_centers;
-  // double *bin_widths;
+  double *true_rates;
+  double *bin_centers;
+  double *bin_widths;
 
-  // double total_rate, bg_rate;
+  double total_rate, bg_rate;
 
-  // n_bins = glbGetNumberOfBins(0);
-  // bin_centers = glbGetBinCentersListPtr(0);
-  // bin_widths = glbGetBinSizeListPtr(0);
+  n_bins = glbGetNumberOfBins(0);
+  bin_centers = glbGetBinCentersListPtr(0);
+  bin_widths = glbGetBinSizeListPtr(0);
 
-  // /*******************************
-  //  * Produce DoubleChooz spectra *
-  //  * *****************************/
-  // glbDefineParams(central_values, theta12, DCth13_min, theta23, deltacp, sdm, ldm);
-  // glbSetOscillationParameters(central_values);
-  // glbSetRates();
-  // /* Compute the combined event spectrum for DC_ND */
-  // InitOutput(MYFILE1, "");
-  // true_rates = glbGetRuleRatePtr(0, 0);
-  // for (i = 0; i <= n_bins - 1; i++)
-  //   AddToOutput(bin_centers[i] - 0.80e-3, true_rates[i], bin_widths[i]);
+  /*******************************
+   * Produce DoubleChooz spectra *
+   * *****************************/
+  glbDefineParams(central_values, theta12, DCth13_min, theta23, deltacp, sdm, ldm);
+  glbSetOscillationParameters(central_values);
+  glbSetRates();
+  /* Compute the combined event spectrum for DC_ND */
+  InitOutput(MYFILE1, "");
+  true_rates = glbGetRuleRatePtr(0, 0);
+  for (i = 0; i <= n_bins - 1; i++)
+    AddToOutput(bin_centers[i] - 0.80e-3, true_rates[i], bin_widths[i]);
 
-  // /* Provide the total IBD events for DC_ND */
-  // total_rate = 0.0;
-  // total_rate = glbTotalRuleRate(0, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
-  // printf("Total IBD rate in DoubleChooz_ND: %g\n", total_rate);
+  /* Provide the total IBD events for DC_ND */
+  total_rate = 0.0;
+  total_rate = glbTotalRuleRate(0, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
+  printf("Total IBD rate in DoubleChooz_ND: %g\n", total_rate);
 
-  // n_bins = glbGetNumberOfBins(1);
-  // bin_centers = glbGetBinCentersListPtr(1);
-  // bin_widths = glbGetBinSizeListPtr(1);
+  n_bins = glbGetNumberOfBins(1);
+  bin_centers = glbGetBinCentersListPtr(1);
+  bin_widths = glbGetBinSizeListPtr(1);
 
-  // /* Compute the combined event spectrum for DC_FD */
-  // InitOutput(MYFILE2, "");
-  // true_rates = glbGetRuleRatePtr(1, 0);
-  // for (i = 0; i <= n_bins - 1; i++)
-  //   AddToOutput(bin_centers[i] - 0.80e-3, true_rates[i], bin_widths[i]);
+  /* Compute the combined event spectrum for DC_FD */
+  InitOutput(MYFILE2, "");
+  true_rates = glbGetRuleRatePtr(1, 0);
+  for (i = 0; i <= n_bins - 1; i++)
+    AddToOutput(bin_centers[i] - 0.80e-3, true_rates[i], bin_widths[i]);
 
-  // /* Provide the total IBD events for DC_FD */
-  // total_rate = 0.0;
-  // total_rate = glbTotalRuleRate(1, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
-  // printf("Total IBD rate in DoubleChooz_FD: %g\n", total_rate);
+  /* Provide the total IBD events for DC_FD */
+  total_rate = 0.0;
+  total_rate = glbTotalRuleRate(1, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
+  printf("Total IBD rate in DoubleChooz_FD: %g\n", total_rate);
 
-  // /************************
-  //  * Produce RENO spectra *
-  //  * **********************/
-  // glbDefineParams(central_values, theta12, RNth13_min, theta23, deltacp, sdm, RNdm31_min);
-  // glbSetOscillationParameters(central_values);
-  // glbSetRates();
+  /************************
+   * Produce RENO spectra *
+   * **********************/
+  glbDefineParams(central_values, theta12, RNth13_min, theta23, deltacp, sdm, RNdm31_min);
+  glbSetOscillationParameters(central_values);
+  glbSetRates();
 
-  // n_bins = glbGetNumberOfBins(2);
-  // bin_centers = glbGetBinCentersListPtr(2);
-  // bin_widths = glbGetBinSizeListPtr(2);
+  n_bins = glbGetNumberOfBins(2);
+  bin_centers = glbGetBinCentersListPtr(2);
+  bin_widths = glbGetBinSizeListPtr(2);
 
-  // /* Compute the combined event spectrum for RENO_ND */
-  // InitOutput(MYFILE3, "");
-  // true_rates = glbGetRuleRatePtr(2, 0);
-  // for (i = 0; i <= n_bins - 1; i++)
-  //   AddToOutput(bin_centers[i] - 0.78e-3, true_rates[i] * (0.1E-3 / bin_widths[i]), bin_widths[i]);
+  /* Compute the combined event spectrum for RENO_ND */
+  InitOutput(MYFILE3, "");
+  true_rates = glbGetRuleRatePtr(2, 0);
+  for (i = 0; i <= n_bins - 1; i++)
+    AddToOutput(bin_centers[i] - 0.78e-3, true_rates[i] * (0.1E-3 / bin_widths[i]), bin_widths[i]);
 
-  // /* Provide the total IBD events for RENO_ND */
-  // total_rate = 0.0;
-  // total_rate = glbTotalRuleRate(2, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
-  // printf("Total IBD rate in RENO_ND: %g\n", total_rate);
+  /* Provide the total IBD events for RENO_ND */
+  total_rate = 0.0;
+  total_rate = glbTotalRuleRate(2, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
+  printf("Total IBD rate in RENO_ND: %g\n", total_rate);
 
-  // n_bins = glbGetNumberOfBins(3);
-  // bin_centers = glbGetBinCentersListPtr(3);
-  // bin_widths = glbGetBinSizeListPtr(3);
+  n_bins = glbGetNumberOfBins(3);
+  bin_centers = glbGetBinCentersListPtr(3);
+  bin_widths = glbGetBinSizeListPtr(3);
 
-  // /* Compute the combined event spectrum for RENO_FD */
-  // InitOutput(MYFILE4, "");
-  // true_rates = glbGetRuleRatePtr(3, 0);
-  // for (i = 0; i <= n_bins - 1; i++)
-  //   AddToOutput(bin_centers[i] - 0.78e-3, true_rates[i] * (0.1E-3 / bin_widths[i]), bin_widths[i]);
+  /* Compute the combined event spectrum for RENO_FD */
+  InitOutput(MYFILE4, "");
+  true_rates = glbGetRuleRatePtr(3, 0);
+  for (i = 0; i <= n_bins - 1; i++)
+    AddToOutput(bin_centers[i] - 0.78e-3, true_rates[i] * (0.1E-3 / bin_widths[i]), bin_widths[i]);
 
-  // /* Provide the total IBD events for RENO_FD */
-  // total_rate = 0.0;
-  // total_rate = glbTotalRuleRate(3, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
-  // printf("Total IBD rate in RENO_FD: %g\n", total_rate);
+  /* Provide the total IBD events for RENO_FD */
+  total_rate = 0.0;
+  total_rate = glbTotalRuleRate(3, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
+  printf("Total IBD rate in RENO_FD: %g\n", total_rate);
 
-  // /*****************************
-  //  * Produce Daya Bay  spectra *
-  //  * ***************************/
-  // glbDefineParams(central_values, theta12, DYBth13_min, theta23, deltacp, sdm, DYBdm31_min);
-  // glbSetOscillationParameters(central_values);
-  // glbSetRates();
+  /*****************************
+   * Produce Daya Bay  spectra *
+   * ***************************/
+  glbDefineParams(central_values, theta12, DYBth13_min, theta23, deltacp, sdm, DYBdm31_min);
+  glbSetOscillationParameters(central_values);
+  glbSetRates();
 
 
 
-  // n_bins = glbGetNumberOfBins(4);
-  // bin_centers = glbGetBinCentersListPtr(4);
-  // bin_widths = glbGetBinSizeListPtr(4);
+  n_bins = glbGetNumberOfBins(4);
+  bin_centers = glbGetBinCentersListPtr(4);
+  bin_widths = glbGetBinSizeListPtr(4);
 
-  // /* Compute the combined event spectrum for DayaBay_EH1 */
-  // InitOutput(MYFILE5, "");
-  // true_rates = glbGetRuleRatePtr(4, 0);
-  // for (i = 0; i <= n_bins - 1; i++)
-  //   AddToOutput(bin_centers[i] - 0.80e-3, true_rates[i] * (1E-3 / bin_widths[i]), bin_widths[i]);
+  /* Compute the combined event spectrum for DayaBay_EH1 */
+  InitOutput(MYFILE5, "");
+  true_rates = glbGetRuleRatePtr(4, 0);
+  for (i = 0; i <= n_bins - 1; i++)
+    AddToOutput(bin_centers[i] - 0.80e-3, true_rates[i] * (1E-3 / bin_widths[i]), bin_widths[i]);
 
-  // /* Provide the total IBD events for DayaBay_EH1 */
-  // total_rate = 0.0;
-  // total_rate = glbTotalRuleRate(4, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
-  // printf("Total IBD rate in DayaBay_EH1: %g\n", total_rate);
-  // // glbFreeParams(true_values);
+  /* Provide the total IBD events for DayaBay_EH1 */
+  total_rate = 0.0;
+  total_rate = glbTotalRuleRate(4, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
+  printf("Total IBD rate in DayaBay_EH1: %g\n", total_rate);
+  // glbFreeParams(true_values);
 
-  // n_bins = glbGetNumberOfBins(5);
-  // bin_centers = glbGetBinCentersListPtr(5);
-  // bin_widths = glbGetBinSizeListPtr(5);
-  // /* Compute the combined event spectrum for DayaBay_EH2 */
-  // InitOutput(MYFILE6, "");
-  // true_rates = glbGetRuleRatePtr(5, 0);
-  // for (i = 0; i <= n_bins - 1; i++)
-  //   AddToOutput(bin_centers[i] - 0.8e-3, true_rates[i] * (1E-3 / bin_widths[i]), bin_widths[i]);
+  n_bins = glbGetNumberOfBins(5);
+  bin_centers = glbGetBinCentersListPtr(5);
+  bin_widths = glbGetBinSizeListPtr(5);
+  /* Compute the combined event spectrum for DayaBay_EH2 */
+  InitOutput(MYFILE6, "");
+  true_rates = glbGetRuleRatePtr(5, 0);
+  for (i = 0; i <= n_bins - 1; i++)
+    AddToOutput(bin_centers[i] - 0.8e-3, true_rates[i] * (1E-3 / bin_widths[i]), bin_widths[i]);
 
-  // /* Provide the total IBD events for DayaBay_EH2 */
-  // total_rate = 0.0;
-  // total_rate = glbTotalRuleRate(5, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
-  // printf("Total IBD rate in DayaBay_EH2: %g\n", total_rate);
+  /* Provide the total IBD events for DayaBay_EH2 */
+  total_rate = 0.0;
+  total_rate = glbTotalRuleRate(5, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
+  printf("Total IBD rate in DayaBay_EH2: %g\n", total_rate);
 
-  // n_bins = glbGetNumberOfBins(6);
-  // bin_centers = glbGetBinCentersListPtr(6);
-  // bin_widths = glbGetBinSizeListPtr(6);
-  // /* Compute the combined event spectrum for DayaBay_EH3 */
-  // InitOutput(MYFILE7, "");
-  // true_rates = glbGetRuleRatePtr(6, 0);
-  // for (i = 0; i <= n_bins - 1; i++)
-  //   AddToOutput(bin_centers[i] - 0.8e-3, true_rates[i] * (1E-3 / bin_widths[i]), bin_widths[i]);
+  n_bins = glbGetNumberOfBins(6);
+  bin_centers = glbGetBinCentersListPtr(6);
+  bin_widths = glbGetBinSizeListPtr(6);
+  /* Compute the combined event spectrum for DayaBay_EH3 */
+  InitOutput(MYFILE7, "");
+  true_rates = glbGetRuleRatePtr(6, 0);
+  for (i = 0; i <= n_bins - 1; i++)
+    AddToOutput(bin_centers[i] - 0.8e-3, true_rates[i] * (1E-3 / bin_widths[i]), bin_widths[i]);
 
-  // /* Provide the total IBD events for DayaBay_EH3 */
-  // total_rate = 0.0;
-  // total_rate = glbTotalRuleRate(6, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
-  // printf("Total IBD rate in DayaBay_EH3: %g\n", total_rate);
+  /* Provide the total IBD events for DayaBay_EH3 */
+  total_rate = 0.0;
+  total_rate = glbTotalRuleRate(6, 0, GLB_ALL, GLB_W_EFF, GLB_WO_BG, GLB_W_COEFF, GLB_SIG);
+  printf("Total IBD rate in DayaBay_EH3: %g\n", total_rate);
 
   /* Destroy parameter vector(s) */
   glbFreeParams(central_values);
