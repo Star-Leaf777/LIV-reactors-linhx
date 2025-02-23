@@ -11,7 +11,7 @@ This project consists of two programs.
 - LIV_minizer_lat : Calculation for minimum of $\chi^2_\text{SG}$ and $\chi^2_\text{PG}$ 
 
 # Credit  
-This repository is primarily developed by Hai-xing Lin for studying Lorentz Invariance Violation (LIV) phenomenology in reactor neutrino oscillations. The GLB files in this library may be freely used without any warranty. When utilizing the LIV-implemented neutrino oscillation probability engine, please cite:  
+This repository is primarily developed by Hai-xing Lin for studying Lorentz Invariance Violation (LIV) phenomenology in reactor neutrino oscillations. The GLB files of Reactors in this library may be freely used without any warranty. When utilizing the LIV-implemented neutrino oscillation probability engine, please cite:  
 
 *Anisotropic Lorentz Violation in Reactor Neutrino Experiments*
 
