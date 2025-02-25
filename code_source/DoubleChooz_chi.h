@@ -129,8 +129,6 @@ double DoubleChooz_true_rates[76] = {4718.384683, 5967.473439, 6873.508091, 7798
                                      193.5850749, 130.1575845, 88.41208913, 68.47981803, 49.18911234,
                                      73.437369, 76.29525132, 57.76275931};
 /* Provide measured data for NOSC Double Chooz (FD data, ND data),Data from DooubleChooze collbration 2020 */
-/*All previous datas are for prompt , it is not suitable to calculate oscillation parameters just with the energy.Thus we go with a new probability*/
-/*This probability functions is modified from AEDL example of GLoBEs website*/
 double DoubleChooz_NOSC_rates[76] = {
     4951.394507, 6394.654162, 7365.421673, 8400.910182, 9261.641323,
     9876.421604, 10174.05358, 9889.157039, 9487.751633, 8950.427785,
