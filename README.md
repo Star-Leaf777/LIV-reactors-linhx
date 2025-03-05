@@ -1,7 +1,10 @@
 # LIV-reactors-linhx
 This project is used to analyze data from short-baseline reactor neutrino experiments with LIV mechanism, including Double Chooz, RENO and DayaBay. It is a supplement for article
 
-*Anisotropic Lorentz Violation in Reactor Neutrino Experiments*
+**H.X. Lin, J. Ren, and J. Tang**,  
+*"Anisotropic Lorentz invariance violation in reactor neutrino experiments"*  
+arXiv:2503.02305 [hep-ph] (2025)  
+URL: [https://arxiv.org/abs/2503.02305](https://arxiv.org/abs/2503.02305)  
 
 # Code Source Introduction
 
@@ -13,7 +16,12 @@ This project consists of two programs.
 # Credit  
 This repository is primarily developed by Hai-xing Lin for studying Lorentz Invariance Violation (LIV) phenomenology in reactor neutrino oscillations. The GLB files of Reactors in this library may be freely used without any warranty. When utilizing the LIV-implemented neutrino oscillation probability engine, please cite:  
 
-*Anisotropic Lorentz Violation in Reactor Neutrino Experiments*
+
+
+**H.X. Lin, J. Ren, and J. Tang**,  
+*"Anisotropic Lorentz invariance violation in reactor neutrino experiments"*  
+arXiv:2503.02305 [hep-ph] (2025)  
+URL: [https://arxiv.org/abs/2503.02305](https://arxiv.org/abs/2503.02305)  
 
 or 
 
